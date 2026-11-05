@@ -119,6 +119,10 @@ def run_case(case_id: str, note: str, raw: dict, llm, prompt) -> dict:
             "first_latency_s": round(first.completion.latency_s, 2),
             "prompt_tokens": sum(a.completion.prompt_tokens for a in card.calls),
             "completion_tokens": sum(a.completion.completion_tokens for a in card.calls),
+            "queries": len(card.text.search_queries),
+            "generic_queries": sum(
+                fold(card.product.name) not in fold(q) for q in card.text.search_queries
+            ),
             "evaluative_phrases": [
                 m.group(0)
                 for m in EVALUATIVE.finditer(card.text.description + " " + card.text.commercial)
@@ -179,6 +183,8 @@ def summarize(records: list[dict], prompt_version: str, model: str | None) -> di
         ),
         "prompt_tokens_total": sum(m["prompt_tokens"] for m in generated),
         "completion_tokens_total": sum(m["completion_tokens"] for m in generated),
+        "queries_4_5": frac(sum(4 <= m.get("queries", 0) <= 5 for m in generated), n),
+        "with_generic_query": frac(sum(m.get("generic_queries", 0) > 0 for m in generated), n),
         "evaluative_phrases_total": sum(len(m["evaluative_phrases"]) for m in generated),
         "with_evaluative_phrases": frac(sum(bool(m["evaluative_phrases"]) for m in generated), n),
     }
@@ -215,6 +221,8 @@ def to_markdown(summary: dict, records: list[dict]) -> str:
         f"| Задержка карточки, медиана и максимум, с | {s['latency_s_median']}; "
         f"{s['latency_s_max']} |",
         f"| Задержка первой попытки, медиана, с | {s['first_attempt_latency_s_median']} |",
+        f"| Запросов от 4 до 5 | {_f(s['queries_4_5'])} |",
+        f"| Есть общий запрос без названия модели | {_f(s['with_generic_query'])} |",
         f"| Оценочные фразы без данных, всего | {s['evaluative_phrases_total']} |",
         f"| Карточки с такими фразами | {_f(s['with_evaluative_phrases'])} |",
         f"| Токены, вход и выход, всего | {s['prompt_tokens_total']}; "

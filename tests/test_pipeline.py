@@ -198,3 +198,13 @@ def test_too_many_queries_trimmed_too_few_flagged():
     few = reply(search_queries=["манометр DM 02"])
     card = make_card(PRODUCT, FakeLLM(few, few))
     assert any(f.startswith("search_queries: получилось 1") for f in card.flags)
+
+
+def test_second_length_call_gets_the_exact_problems():
+    short = reply(description_chars=500)
+    llm = FakeLLM(short, short, plain(1500), plain(950))
+    card = make_card(PRODUCT, llm)
+    assert card.status == "ok" and len(card.length_attempts) == 2
+    feedback = llm.calls[3][-1]["content"]
+    assert llm.calls[3][-2]["role"] == "assistant"
+    assert "получилось 14" in feedback and "800–1200" in feedback

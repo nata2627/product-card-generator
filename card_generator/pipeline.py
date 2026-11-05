@@ -134,27 +134,30 @@ def fit_description(card: Card, llm: LLM, text: CardText, facts: list[str]):
 
     A full retry trades length against facts; a call that only rewrites one field to a
     given size keeps the rest of the card as it is. The new text is taken only if it fits
-    and brings no more fact problems than the current one.
+    and brings no fact problem the current text did not have; otherwise the second call
+    gets the exact problems, as in the main retry.
     """
     prompt = load_prompt(LENGTH_PROMPT)
-    current = text
+    messages = build_length_messages(
+        prompt, card.product, text.description, DESCRIPTION_MIN, DESCRIPTION_MAX
+    )
     for _ in range(MAX_LENGTH_CALLS):
-        messages = build_length_messages(
-            prompt, card.product, current.description, DESCRIPTION_MIN, DESCRIPTION_MAX
-        )
         completion = llm.complete(messages)
         description = parse_plain_reply(completion.text)
         if not description:
             card.length_attempts.append(Attempt(completion, format_error="Пустой ответ."))
             continue
-        candidate = current.model_copy(update={"description": description})
+        candidate = text.model_copy(update={"description": description})
         found = [str(v) for v in check_facts(candidate, card.product)]
-        card.length_attempts.append(Attempt(completion, candidate, found, check_lengths(candidate)))
-        if len(found) > len(facts):
-            continue
-        current = candidate
-        if DESCRIPTION_MIN <= len(description) <= DESCRIPTION_MAX:
+        lengths = check_lengths(candidate)
+        card.length_attempts.append(Attempt(completion, candidate, found, lengths))
+        new_facts = [f for f in found if f not in facts]
+        if not new_facts and not lengths:
             return candidate, found
+        messages = messages + [
+            {"role": "assistant", "content": completion.text},
+            {"role": "user", "content": length_retry_request(new_facts + lengths)},
+        ]
     # No call hit the range: keep the text that came out of the fact check.
     return text, facts
 
@@ -185,6 +188,14 @@ def retry_request(problems: list[str]) -> str:
         "Исправь только эти места. Значение, которого нет во входных данных, убери, "
         "а не заменяй другим. Значение из перечня для серии подай как вариант серии. "
         "Ответь тем же JSON-объектом целиком."
+    )
+
+
+def length_retry_request(problems: list[str]) -> str:
+    lines = "\n".join(f"- {p}" for p in problems)
+    return (
+        f"В новом тексте найдены проблемы:\n{lines}\n\n"
+        "Исправь их и ответь всем описанием целиком, только текстом."
     )
 
 
