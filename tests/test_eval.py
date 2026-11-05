@@ -36,6 +36,7 @@ def _record(case, attempts, first_facts=0, final_facts=0, first_ok=True, final_o
             "first_latency_s": 10.0,
             "prompt_tokens": 100,
             "completion_tokens": 50,
+            "evaluative_phrases": ["надежн"] * final_facts,
         }
     card = {"product": {"name": case}, "meta": {"model": "m"}}
     return {"case": case, "note": "", "metrics": metrics, "card": card}
@@ -57,6 +58,7 @@ def test_summary_keeps_denominators():
     assert s["not_enough_data"] == {"k": 1, "n": 3}
     assert s["errors"] == {"k": 1, "n": 4}
     assert s["latency_s_median"] == 15.0
+    assert s["with_evaluative_phrases"] == {"k": 1, "n": 2}
     markdown = to_markdown(s, records)
     assert "| Первая попытка с нарушением фактов | 1 из 2 |" in markdown
     assert "ошибка: таймаут" in markdown

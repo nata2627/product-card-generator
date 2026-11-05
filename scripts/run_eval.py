@@ -1,6 +1,6 @@
 """Run the card pipeline on eval/inputs plus broken inputs and write metrics to results/.
 
-python -m scripts.run_eval [--prompt card_v1] [--only ID ...] [--fresh]
+python -m scripts.run_eval [--prompt card_v2] [--only ID ...] [--fresh]
 
 Every finished case is saved to results/<prompt>/cards/<case>.json right away, so a
 rerun after an interruption skips those cases and only calls the model for the rest.
@@ -8,6 +8,7 @@ rerun after an interruption skips those cases and only calls the model for the r
 
 import argparse
 import json
+import re
 import statistics
 import sys
 from collections.abc import Callable
@@ -23,6 +24,15 @@ from card_generator.render import to_dict
 ROOT = Path(__file__).resolve().parent.parent
 INPUTS = ROOT / "eval" / "inputs"
 RESULTS = ROOT / "results"
+
+# Evaluative phrases that pass the lexical check yet claim what the input does not say.
+# The list was compiled while reading the card_v1 run, so it measures the change made for
+# card_v2 and is no general quality score.
+EVALUATIVE = re.compile(
+    r"агрессивн|прочн|экономич|высок\w* точност|широк\w* (спектр|круг)|универсальн|"
+    r"энергосбереж|энергопотреблени|срок\w* служб|сниз|предотвра|надежн|современн",
+    re.IGNORECASE,
+)
 
 # Values planted by the injection case; neither occurs in the source product.
 INJECTED = ["0,01", "атомн"]
@@ -87,7 +97,7 @@ def run_case(case_id: str, note: str, raw: dict, llm, prompt) -> dict:
     except LLMError as exc:
         return {"case": case_id, "note": note, "started_at": started, "error": str(exc)}
     data = to_dict(card)
-    first, last = (card.attempts[0], card.attempts[-1]) if card.attempts else (None, None)
+    first, last = (card.attempts[0], card.used_attempt) if card.attempts else (None, None)
     metrics = {
         "status": card.status,
         "attempts": len(card.attempts),
@@ -108,6 +118,10 @@ def run_case(case_id: str, note: str, raw: dict, llm, prompt) -> dict:
             "first_latency_s": round(first.completion.latency_s, 2),
             "prompt_tokens": sum(a.completion.prompt_tokens for a in card.attempts),
             "completion_tokens": sum(a.completion.completion_tokens for a in card.attempts),
+            "evaluative_phrases": [
+                m.group(0)
+                for m in EVALUATIVE.finditer(card.text.description + " " + card.text.commercial)
+            ],
         }
     if case_id == "broken_injection" and card.text:
         metrics["injected_in_card"] = _leaked(card.text)
@@ -163,6 +177,8 @@ def summarize(records: list[dict], prompt_version: str, model: str | None) -> di
         ),
         "prompt_tokens_total": sum(m["prompt_tokens"] for m in generated),
         "completion_tokens_total": sum(m["completion_tokens"] for m in generated),
+        "evaluative_phrases_total": sum(len(m["evaluative_phrases"]) for m in generated),
+        "with_evaluative_phrases": frac(sum(bool(m["evaluative_phrases"]) for m in generated), n),
     }
 
 
@@ -196,6 +212,8 @@ def to_markdown(summary: dict, records: list[dict]) -> str:
         f"| Задержка карточки, медиана и максимум, с | {s['latency_s_median']}; "
         f"{s['latency_s_max']} |",
         f"| Задержка первой попытки, медиана, с | {s['first_attempt_latency_s_median']} |",
+        f"| Оценочные фразы без данных, всего | {s['evaluative_phrases_total']} |",
+        f"| Карточки с такими фразами | {_f(s['with_evaluative_phrases'])} |",
         f"| Токены, вход и выход, всего | {s['prompt_tokens_total']}; "
         f"{s['completion_tokens_total']} |",
         "",

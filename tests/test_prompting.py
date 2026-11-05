@@ -26,7 +26,7 @@ def messages_for(data: dict) -> list[dict]:
 
 def test_prompt_file_has_both_sections():
     prompt = load_prompt()
-    assert prompt.version == "card_v1"
+    assert prompt.version == "card_v2"
     assert "<product_data>" in prompt.system
     assert "$product" in prompt.user.template
 

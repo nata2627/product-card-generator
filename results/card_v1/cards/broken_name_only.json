@@ -1,7 +1,7 @@
 {
   "case": "broken_name_only",
   "note": "только название 54378",
-  "started_at": "2026-11-05T12:01:44+00:00",
+  "started_at": "2026-11-05T12:24:30+00:00",
   "metrics": {
     "status": "not_enough_data",
     "attempts": 0,
@@ -87,6 +87,7 @@
       "prompt_version": "card_v1",
       "model": null,
       "attempts": 0,
+      "used_attempt": null,
       "first_attempt_problems": [],
       "prompt_tokens": 0,
       "completion_tokens": 0,

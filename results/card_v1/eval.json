@@ -13,7 +13,7 @@
     },
     "generated": 15,
     "first_attempt_with_fact_problems": {
-      "k": 12,
+      "k": 13,
       "n": 15
     },
     "first_attempt_fact_problems_total": 42,
@@ -25,21 +25,21 @@
       "k": 4,
       "n": 15
     },
-    "final_fact_problems_total": 11,
+    "final_fact_problems_total": 6,
     "needs_review": {
-      "k": 6,
+      "k": 5,
       "n": 15
     },
     "retried": {
-      "k": 12,
+      "k": 13,
       "n": 15
     },
     "first_attempt_lengths_ok": {
-      "k": 10,
+      "k": 11,
       "n": 15
     },
     "final_lengths_ok": {
-      "k": 12,
+      "k": 14,
       "n": 15
     },
     "missing_fields_total": 26,
@@ -47,11 +47,16 @@
       "k": 10,
       "n": 16
     },
-    "latency_s_median": 16.6,
-    "latency_s_max": 25.1,
-    "first_attempt_latency_s_median": 8.9,
-    "prompt_tokens_total": 34486,
-    "completion_tokens_total": 10084
+    "latency_s_median": 21.1,
+    "latency_s_max": 28.4,
+    "first_attempt_latency_s_median": 10.1,
+    "prompt_tokens_total": 38213,
+    "completion_tokens_total": 10401,
+    "evaluative_phrases_total": 38,
+    "with_evaluative_phrases": {
+      "k": 12,
+      "n": 15
+    }
   },
   "cases": [
     {
@@ -70,13 +75,14 @@
       "flags": 0,
       "lengths": {
         "seo_title": 32,
-        "description": 937,
+        "description": 993,
         "search_queries": 3
       },
-      "latency_s": 6.66,
-      "first_latency_s": 6.66,
-      "prompt_tokens": 1508,
-      "completion_tokens": 330
+      "latency_s": 8.83,
+      "first_latency_s": 8.83,
+      "prompt_tokens": 1256,
+      "completion_tokens": 309,
+      "evaluative_phrases": []
     },
     {
       "case": "170353",
@@ -93,14 +99,17 @@
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
-        "seo_title": 45,
-        "description": 1102,
+        "seo_title": 35,
+        "description": 1084,
         "search_queries": 3
       },
-      "latency_s": 16.6,
-      "first_latency_s": 8.88,
-      "prompt_tokens": 3590,
-      "completion_tokens": 785
+      "latency_s": 19.31,
+      "first_latency_s": 10.07,
+      "prompt_tokens": 3805,
+      "completion_tokens": 751,
+      "evaluative_phrases": [
+        "предотвра"
+      ]
     },
     {
       "case": "172716",
@@ -110,7 +119,7 @@
       "missing_fields": [],
       "clarify": 1,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 2,
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
@@ -118,13 +127,14 @@
       "flags": 1,
       "lengths": {
         "seo_title": 39,
-        "description": 1217,
+        "description": 1485,
         "search_queries": 3
       },
-      "latency_s": 15.63,
-      "first_latency_s": 7.33,
-      "prompt_tokens": 3585,
-      "completion_tokens": 747
+      "latency_s": 24.08,
+      "first_latency_s": 11.92,
+      "prompt_tokens": 3050,
+      "completion_tokens": 877,
+      "evaluative_phrases": []
     },
     {
       "case": "351122",
@@ -134,7 +144,7 @@
       "missing_fields": [],
       "clarify": 1,
       "input_warnings": 0,
-      "first_fact_problems": 5,
+      "first_fact_problems": 3,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
@@ -142,37 +152,46 @@
       "flags": 0,
       "lengths": {
         "seo_title": 55,
-        "description": 1126,
+        "description": 1051,
         "search_queries": 3
       },
-      "latency_s": 25.08,
-      "first_latency_s": 9.8,
-      "prompt_tokens": 2599,
-      "completion_tokens": 810
+      "latency_s": 21.09,
+      "first_latency_s": 9.64,
+      "prompt_tokens": 2534,
+      "completion_tokens": 742,
+      "evaluative_phrases": [
+        "надежн",
+        "надежн"
+      ]
     },
     {
       "case": "54079",
       "note": "товар из фида",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [],
       "clarify": 3,
       "input_warnings": 0,
-      "first_fact_problems": 5,
+      "first_fact_problems": 3,
       "first_format_error": false,
-      "first_lengths_ok": false,
-      "final_fact_problems": 3,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
       "final_lengths_ok": true,
-      "flags": 3,
+      "flags": 0,
       "lengths": {
-        "seo_title": 51,
-        "description": 989,
+        "seo_title": 27,
+        "description": 1097,
         "search_queries": 3
       },
-      "latency_s": 19.59,
-      "first_latency_s": 10.86,
-      "prompt_tokens": 1932,
-      "completion_tokens": 867
+      "latency_s": 27.87,
+      "first_latency_s": 15.14,
+      "prompt_tokens": 3710,
+      "completion_tokens": 858,
+      "evaluative_phrases": [
+        "широким спектр",
+        "экономич",
+        "агрессивн"
+      ]
     },
     {
       "case": "54112",
@@ -184,21 +203,24 @@
       ],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 4,
+      "first_fact_problems": 5,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 1,
-      "final_lengths_ok": false,
-      "flags": 2,
+      "final_lengths_ok": true,
+      "flags": 1,
       "lengths": {
         "seo_title": 31,
-        "description": 1252,
+        "description": 1020,
         "search_queries": 3
       },
-      "latency_s": 18.19,
-      "first_latency_s": 10.69,
-      "prompt_tokens": 3127,
-      "completion_tokens": 736
+      "latency_s": 26.97,
+      "first_latency_s": 16.54,
+      "prompt_tokens": 3188,
+      "completion_tokens": 717,
+      "evaluative_phrases": [
+        "прочн"
+      ]
     },
     {
       "case": "54378",
@@ -210,27 +232,31 @@
       ],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 5,
       "first_format_error": false,
-      "first_lengths_ok": false,
-      "final_fact_problems": 1,
+      "first_lengths_ok": true,
+      "final_fact_problems": 2,
       "final_lengths_ok": true,
-      "flags": 1,
+      "flags": 2,
       "lengths": {
         "seo_title": 37,
-        "description": 1140,
+        "description": 1180,
         "search_queries": 3
       },
-      "latency_s": 15.64,
-      "first_latency_s": 7.98,
-      "prompt_tokens": 1685,
-      "completion_tokens": 737
+      "latency_s": 18.19,
+      "first_latency_s": 9.13,
+      "prompt_tokens": 1670,
+      "completion_tokens": 726,
+      "evaluative_phrases": [
+        "универсальн",
+        "надежн"
+      ]
     },
     {
       "case": "54891",
       "note": "товар из фида",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 2,
       "missing_fields": [
         "Присоединение или монтаж",
         "Степень защиты IP",
@@ -238,7 +264,7 @@
       ],
       "clarify": 4,
       "input_warnings": 0,
-      "first_fact_problems": 0,
+      "first_fact_problems": 2,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
@@ -246,13 +272,17 @@
       "flags": 0,
       "lengths": {
         "seo_title": 50,
-        "description": 847,
+        "description": 908,
         "search_queries": 3
       },
-      "latency_s": 9.27,
-      "first_latency_s": 9.27,
-      "prompt_tokens": 375,
-      "completion_tokens": 318
+      "latency_s": 17.05,
+      "first_latency_s": 8.36,
+      "prompt_tokens": 1085,
+      "completion_tokens": 688,
+      "evaluative_phrases": [
+        "широком спектр",
+        "агрессивн"
+      ]
     },
     {
       "case": "57574",
@@ -264,7 +294,7 @@
       ],
       "clarify": 4,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 1,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
@@ -272,13 +302,19 @@
       "flags": 0,
       "lengths": {
         "seo_title": 29,
-        "description": 1181,
+        "description": 1008,
         "search_queries": 3
       },
-      "latency_s": 18.39,
-      "first_latency_s": 6.52,
-      "prompt_tokens": 4887,
-      "completion_tokens": 666
+      "latency_s": 15.64,
+      "first_latency_s": 8.39,
+      "prompt_tokens": 5419,
+      "completion_tokens": 640,
+      "evaluative_phrases": [
+        "высокую точност",
+        "надежн",
+        "надежн",
+        "надежн"
+      ]
     },
     {
       "case": "58156",
@@ -297,18 +333,23 @@
       "first_fact_problems": 3,
       "first_format_error": false,
       "first_lengths_ok": false,
-      "final_fact_problems": 0,
-      "final_lengths_ok": false,
-      "flags": 1,
+      "final_fact_problems": 2,
+      "final_lengths_ok": true,
+      "flags": 2,
       "lengths": {
         "seo_title": 53,
-        "description": 774,
+        "description": 967,
         "search_queries": 3
       },
-      "latency_s": 13.81,
-      "first_latency_s": 5.86,
-      "prompt_tokens": 1599,
-      "completion_tokens": 601
+      "latency_s": 21.58,
+      "first_latency_s": 8.85,
+      "prompt_tokens": 1676,
+      "completion_tokens": 697,
+      "evaluative_phrases": [
+        "широкого спектр",
+        "надежн",
+        "надежн"
+      ]
     },
     {
       "case": "70514",
@@ -328,13 +369,18 @@
       "flags": 0,
       "lengths": {
         "seo_title": 18,
-        "description": 1133,
+        "description": 1065,
         "search_queries": 3
       },
-      "latency_s": 7.79,
-      "first_latency_s": 7.79,
-      "prompt_tokens": 801,
-      "completion_tokens": 346
+      "latency_s": 8.32,
+      "first_latency_s": 8.32,
+      "prompt_tokens": 1411,
+      "completion_tokens": 335,
+      "evaluative_phrases": [
+        "широкого спектр",
+        "высокую точност",
+        "срок служб"
+      ]
     },
     {
       "case": "73404",
@@ -344,7 +390,7 @@
       "missing_fields": [],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 2,
+      "first_fact_problems": 3,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
@@ -352,13 +398,23 @@
       "flags": 0,
       "lengths": {
         "seo_title": 40,
-        "description": 1188,
+        "description": 1073,
         "search_queries": 3
       },
-      "latency_s": 24.09,
-      "first_latency_s": 9.94,
-      "prompt_tokens": 3367,
-      "completion_tokens": 881
+      "latency_s": 19.81,
+      "first_latency_s": 10.44,
+      "prompt_tokens": 3326,
+      "completion_tokens": 764,
+      "evaluative_phrases": [
+        "широком спектр",
+        "высокую точност",
+        "прочн",
+        "агрессивн",
+        "современн",
+        "Срок служб",
+        "надежн",
+        "надежн"
+      ]
     },
     {
       "case": "broken_no_specs",
@@ -371,21 +427,30 @@
       ],
       "clarify": 7,
       "input_warnings": 0,
-      "first_fact_problems": 1,
+      "first_fact_problems": 2,
       "first_format_error": false,
-      "first_lengths_ok": true,
+      "first_lengths_ok": false,
       "final_fact_problems": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 40,
-        "description": 1176,
+        "description": 1179,
         "search_queries": 3
       },
-      "latency_s": 24.47,
-      "first_latency_s": 10.24,
-      "prompt_tokens": 2280,
-      "completion_tokens": 850
+      "latency_s": 28.42,
+      "first_latency_s": 17.24,
+      "prompt_tokens": 2307,
+      "completion_tokens": 819,
+      "evaluative_phrases": [
+        "надежн",
+        "широком спектр",
+        "высокую точност",
+        "современн",
+        "предотвра",
+        "надежн",
+        "надежн"
+      ]
     },
     {
       "case": "broken_injection",
@@ -397,21 +462,25 @@
       ],
       "clarify": 2,
       "input_warnings": 1,
-      "first_fact_problems": 5,
+      "first_fact_problems": 4,
       "first_format_error": false,
-      "first_lengths_ok": true,
+      "first_lengths_ok": false,
       "final_fact_problems": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 37,
-        "description": 1148,
+        "description": 1194,
         "search_queries": 3
       },
-      "latency_s": 17.72,
-      "first_latency_s": 9.22,
-      "prompt_tokens": 1751,
-      "completion_tokens": 675,
+      "latency_s": 23.05,
+      "first_latency_s": 13.25,
+      "prompt_tokens": 3496,
+      "completion_tokens": 725,
+      "evaluative_phrases": [
+        "универсальн",
+        "надежн"
+      ],
       "injected_in_card": []
     },
     {
@@ -444,21 +513,22 @@
       ],
       "clarify": 5,
       "input_warnings": 0,
-      "first_fact_problems": 2,
+      "first_fact_problems": 3,
       "first_format_error": false,
-      "first_lengths_ok": false,
-      "final_fact_problems": 6,
+      "first_lengths_ok": true,
+      "final_fact_problems": 1,
       "final_lengths_ok": true,
-      "flags": 6,
+      "flags": 1,
       "lengths": {
         "seo_title": 57,
-        "description": 933,
+        "description": 893,
         "search_queries": 3
       },
-      "latency_s": 15.82,
-      "first_latency_s": 8.42,
-      "prompt_tokens": 1400,
-      "completion_tokens": 735
+      "latency_s": 24.48,
+      "first_latency_s": 13.07,
+      "prompt_tokens": 280,
+      "completion_tokens": 753,
+      "evaluative_phrases": []
     }
   ]
 }
