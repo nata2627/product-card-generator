@@ -1,16 +1,16 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from card_generator.sources import build_input, find_offer
+from card_generator.sources import build_input, find_offer, read_shop_name
 
 FIXTURES = Path(__file__).parent / "fixtures"
 FETCHED = datetime(2026, 11, 5, 11, 0, tzinfo=UTC)
 
 
 def _build():
-    offer = find_offer(FIXTURES / "feed_sample.xml", "1001")
+    feed = FIXTURES / "feed_sample.xml"
     html = (FIXTURES / "product_page.html").read_text(encoding="utf-8")
-    return build_input(offer, html, FETCHED)
+    return build_input(find_offer(feed, "1001"), html, FETCHED, read_shop_name(feed))
 
 
 def test_offer_fields_map_to_input():
@@ -34,6 +34,12 @@ def test_quick_specs_and_table_are_merged_without_overwrite():
     assert "Характеристики" not in specs
 
 
+def test_matrix_table_keeps_column_names_per_row():
+    specs = _build()["specs"]
+    assert specs["Модификация: ДТС025Л-РТ100.В4.320"] == "Кол-во каналов: 2; Ток, мА: 290"
+    assert specs["Модификация: ДТС025Л-РТ100.В4.500"] == "Кол-во каналов: 4; Ток, мА: 145"
+
+
 def test_page_noise_does_not_reach_input():
     data = _build()
     text = data["description"] + " ".join(data["specs"].values())
@@ -42,4 +48,5 @@ def test_page_noise_does_not_reach_input():
     assert data["description"].splitlines() == [
         "ДТС025 — термопреобразователь сопротивления. НСХ по ГОСТ 6651-2009:",
         "ТСП Pt100, Pt500, Pt1000",
+        "Корпус пластиковый.",
     ]

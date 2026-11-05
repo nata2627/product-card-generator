@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from card_generator.sources import build_input, fetch_page, find_offer
+from card_generator.sources import build_input, fetch_page, find_offer, read_shop_name
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -19,7 +19,7 @@ def main() -> None:
 
     offer = find_offer(args.feed, args.offer_id)
     html, fetched_at = fetch_page(offer["url"], args.pages)
-    data = build_input(offer, html, fetched_at)
+    data = build_input(offer, html, fetched_at, read_shop_name(args.feed))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"{args.out}: {len(data['specs'])} specs, {len(data['description'])} chars")

@@ -21,6 +21,12 @@ USER_AGENT = "card-draft-prototype/0.1 (test task, low rate)"
 REQUEST_PAUSE_S = 2.0
 MAX_DESCRIPTION_CHARS = 6000
 
+# Sentences about price, stock, delivery or warranty are shop copy, not device facts.
+SHOP_NOISE = re.compile(
+    r"цен[аеуы]\b|₽|\bруб|интернет-магазин|в наличии|купить|приобрести|доставк|гаранти",
+    re.IGNORECASE,
+)
+
 _last_request_at = 0.0
 
 
@@ -38,6 +44,13 @@ def iter_offers(feed_path: Path) -> Iterator[dict]:
                 offer[child.tag] = (child.text or "").strip()
         elem.clear()
         yield offer
+
+
+def read_shop_name(feed_path: Path) -> str:
+    for _, elem in ET.iterparse(feed_path, events=("end",)):
+        if elem.tag == "name":
+            return (elem.text or "").strip()
+    return ""
 
 
 def find_offer(feed_path: Path, offer_id: str) -> dict:
@@ -90,47 +103,67 @@ def parse_quick_specs(soup: BeautifulSoup) -> dict[str, str]:
     return specs
 
 
-def parse_spec_table(soup: BeautifulSoup) -> dict[str, str]:
-    """Flatten the series table: one key per row, values of all columns joined.
+GENERIC_HEADERS = {"характеристики", "параметр", "наименование", "наименование параметра"}
 
-    Rows that continue a key with ``rowspan`` and section rows ending with ':'
-    are folded into readable keys, so the series values stay together.
+
+def parse_spec_table(soup: BeautifulSoup) -> dict[str, str]:
+    """Flatten the series tables into one key per row with all column values kept.
+
+    Three shapes occur on the pages: a plain "name | value" table, rows that
+    continue a key with ``rowspan`` or sit under a section row ending with ':',
+    and matrix tables whose first row names the columns (often one row per
+    modification). Matrix rows keep the column names next to their values.
     """
     block = soup.select_one("#specifications")
     if block is None:
         return {}
     specs: dict[str, list[str]] = {}
+    for table in block.find_all("table"):
+        _parse_table(table, specs)
+    return {k: "; ".join(v) for k, v in specs.items()}
+
+
+def _parse_table(table: Tag, specs: dict[str, list[str]]) -> None:
+    header: list[str] = []
     section = ""
     current_key = ""
     rows_left = 0
-    for row in block.select("table tr"):
-        cells = [_cell_text(c) for c in row.find_all("td")]
-        cells = [c for c in cells if c]
-        if not cells:
-            continue
+    for index, row in enumerate(r for r in table.find_all("tr") if _row_cells(r)):
+        cells = _row_cells(row)
+        if index == 0 and len(cells) >= 2:
+            if len(cells) >= 3:
+                header = cells
+                continue
+            if cells[0].lower() in GENERIC_HEADERS:
+                continue
         if rows_left > 0:
             rows_left -= 1
             specs[current_key].extend(cells)
             continue
-        first = row.find("td")
+        if header and len(cells) == len(header):
+            key = f"{header[0]}: {cells[0]}"
+            pairs = zip(header[1:], cells[1:], strict=True)
+            specs.setdefault(key, []).append("; ".join(f"{h}: {v}" for h, v in pairs))
+            continue
         if len(cells) == 1:
             if cells[0].endswith(":"):
                 section = cells[0].rstrip(":")
             continue
         key, values = cells[0], cells[1:]
-        if key.lower() == "характеристики":
-            continue
-        if key.startswith("-") or key.startswith("–"):
+        if key[0] in "-–":
             key = f"{section}, {key.lstrip('-– ')}" if section else key.lstrip("-– ")
         else:
             section = ""
         current_key = key
-        rows_left = int(first.get("rowspan", 1)) - 1
+        rows_left = int(row.find("td").get("rowspan", 1)) - 1
         specs.setdefault(key, []).extend(values)
-    return {k: "; ".join(v) for k, v in specs.items()}
 
 
-def parse_description(soup: BeautifulSoup) -> str:
+def _row_cells(row: Tag) -> list[str]:
+    return [text for text in (_cell_text(c) for c in row.find_all(["td", "th"])) if text]
+
+
+def parse_description(soup: BeautifulSoup, shop_name: str = "") -> str:
     block = soup.select_one("#description .long-short-block__inner")
     if block is None:
         return ""
@@ -138,18 +171,29 @@ def parse_description(soup: BeautifulSoup) -> str:
     for el in block.find_all(["p", "td", "h3", "li"]):
         if el.find(["p", "td", "li"]):
             continue
-        text = clean_text(el.get_text(" "))
+        sentences = re.split(r"(?<=[.!?])\s+", clean_text(el.get_text(" ")))
+        text = " ".join(x for x in sentences if x and not _is_shop_copy(x, shop_name))
         if text:
             lines.append(text)
     return "\n".join(lines)
 
 
-def build_input(offer: dict, html: str, fetched_at: datetime) -> dict:
+def _is_shop_copy(sentence: str, shop_name: str) -> bool:
+    if SHOP_NOISE.search(sentence):
+        return True
+    if not shop_name:
+        return False
+    # Shop names are spelled with and without the hyphen on the pages.
+    letters = re.sub(r"[\W_]", "", sentence.lower())
+    return re.sub(r"[\W_]", "", shop_name.lower()) in letters
+
+
+def build_input(offer: dict, html: str, fetched_at: datetime, shop_name: str = "") -> dict:
     soup = BeautifulSoup(html, "html.parser")
     specs = parse_quick_specs(soup)
     for key, value in parse_spec_table(soup).items():
         specs.setdefault(key, value)
-    description = parse_description(soup)[:MAX_DESCRIPTION_CHARS]
+    description = parse_description(soup, shop_name)[:MAX_DESCRIPTION_CHARS]
     series = soup.select_one("#specifications h2")
     return {
         "name": offer.get("name", ""),

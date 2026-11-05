@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <yml_catalog date="2026-11-05T08:10:29+03:00">
     <shop>
+        <name>Приборы-Тест</name>
         <offers>
             <offer id="1001" available="true">
                 <name>ДТС025Л-РТ100.В4.320</name>
