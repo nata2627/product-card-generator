@@ -21,3 +21,4 @@ logs/
 materials/
 data/raw/
 *.token
+.cache/
