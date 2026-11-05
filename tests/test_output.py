@@ -132,3 +132,10 @@ def test_model_error_is_502_with_message():
     res = TestClient(create_app(down)).post("/api/card", json=PRODUCT)
     assert res.status_code == 502
     assert res.json() == {"errors": ["Ошибка модели: Нет соединения с GigaChat."]}
+
+
+def test_oversized_body_is_refused_with_message():
+    body = json.dumps({**PRODUCT, "description": "а" * 5_000_000}, ensure_ascii=False)
+    res = client().post("/api/card", content=body.encode())
+    assert res.status_code == 422
+    assert res.json()["errors"][0].startswith("Вход слишком большой")

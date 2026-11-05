@@ -12,6 +12,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 MAX_NAME_CHARS = 300
 MAX_DESCRIPTION_CHARS = 6000
 MAX_SPECS = 100
+# A real product with the longest allowed description and 100 specs stays far below this.
+MAX_INPUT_BYTES = 1_000_000
 
 
 class InputError(Exception):
@@ -89,6 +91,11 @@ def parse_product(raw: str | bytes | Any) -> tuple[Product, list[str]]:
 
 
 def _load_json(raw: str | bytes) -> Any:
+    size = len(raw.encode("utf-8", "replace") if isinstance(raw, str) else raw)
+    if size > MAX_INPUT_BYTES:
+        raise InputError(
+            [f"Вход слишком большой: {size} байт, допустимо до {MAX_INPUT_BYTES} байт."]
+        )
     if isinstance(raw, bytes):
         try:
             raw = raw.decode("utf-8")
