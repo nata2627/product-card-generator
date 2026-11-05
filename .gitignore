@@ -1,0 +1,23 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.session
+*.pem
+
+# session exports carry everything the session saw, secrets included
+*-session-export*.txt
+exports/
+
+# tooling
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+logs/
+.vscode/
+.DS_Store
+
+materials/
+data/raw/
+*.token
