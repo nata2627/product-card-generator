@@ -6,7 +6,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from card_generator.llm import ROOT, GigaChatClient, LLMError
+from card_generator.llm import ROOT, GigaChatClient, LazyClient, LLMError
 from card_generator.pipeline import make_card
 from card_generator.prompting import DEFAULT_PROMPT, load_prompt
 from card_generator.render import to_dict, to_markdown
@@ -38,7 +38,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise InputError([f"Файл не найден: {path}"])
             raw, stem = path.read_bytes(), path.stem
         card = make_card(
-            raw, GigaChatClient.from_env(), load_prompt(args.prompt), args.draft_anyway
+            raw, LazyClient(GigaChatClient.from_env), load_prompt(args.prompt), args.draft_anyway
         )
     except InputError as exc:
         print("Ошибка во входных данных:", *exc.messages, sep="\n- ", file=sys.stderr)

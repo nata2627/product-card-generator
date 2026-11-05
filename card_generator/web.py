@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
-from card_generator.llm import LLM, GigaChatClient, LLMError
+from card_generator.llm import LLM, GigaChatClient, LazyClient, LLMError
 from card_generator.pipeline import make_card
 from card_generator.render import to_dict, to_markdown
 from card_generator.schema import InputError
@@ -17,12 +17,7 @@ PAGE = Path(__file__).resolve().parent / "static" / "index.html"
 
 def create_app(llm_factory: Callable[[], LLM] = GigaChatClient.from_env) -> FastAPI:
     app = FastAPI(title="Черновик карточки КИП")
-    clients: list[LLM] = []
-
-    def llm() -> LLM:
-        if not clients:
-            clients.append(llm_factory())
-        return clients[0]
+    llm = LazyClient(llm_factory)
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
@@ -33,7 +28,7 @@ def create_app(llm_factory: Callable[[], LLM] = GigaChatClient.from_env) -> Fast
         raw = await request.body()
         try:
             # The model call takes seconds; keep it off the event loop.
-            result = await run_in_threadpool(make_card, raw, llm(), None, draft_anyway)
+            result = await run_in_threadpool(make_card, raw, llm, None, draft_anyway)
         except InputError as exc:
             return JSONResponse({"errors": exc.messages}, status_code=422)
         except LLMError as exc:

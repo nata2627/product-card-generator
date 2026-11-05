@@ -167,3 +167,19 @@ class GigaChatClient:
                     "Ошибка SSL: нужен корневой сертификат Минцифры, см. README, шаг 2."
                 ) from exc
             raise LLMError("Нет соединения с GigaChat.") from exc
+
+
+class LazyClient:
+    """Builds the real client on the first model call.
+
+    Input errors and the "not enough data" answer then come out without a key or certificate.
+    """
+
+    def __init__(self, factory: Callable[[], LLM] | None = None):
+        self._factory = factory or GigaChatClient.from_env
+        self._client: LLM | None = None
+
+    def complete(self, messages: list[dict]) -> Completion:
+        if self._client is None:
+            self._client = self._factory()
+        return self._client.complete(messages)

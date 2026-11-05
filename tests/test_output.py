@@ -51,6 +51,12 @@ def test_pipe_in_values_does_not_break_the_table():
 def fake_cli(monkeypatch, tmp_path):
     monkeypatch.setattr(cli, "CALL_LOG", tmp_path / "calls.jsonl")
 
+    # Until a test supplies replies, behave as a machine without .env.
+    def no_key(cls):
+        raise LLMError("Нет ключа GIGACHAT_AUTH_KEY. Заполните .env по README, шаг 3.")
+
+    monkeypatch.setattr(cli.GigaChatClient, "from_env", classmethod(no_key))
+
     def use(*replies):
         monkeypatch.setattr(
             cli.GigaChatClient, "from_env", classmethod(lambda c: FakeLLM(*replies))
@@ -83,11 +89,7 @@ def test_cli_missing_file(fake_cli, capsys):
     assert "Файл не найден" in capsys.readouterr().err
 
 
-def test_cli_reports_model_error(monkeypatch, tmp_path, capsys):
-    def no_key(cls):
-        raise LLMError("Нет ключа GIGACHAT_AUTH_KEY. Заполните .env по README, шаг 3.")
-
-    monkeypatch.setattr(cli.GigaChatClient, "from_env", classmethod(no_key))
+def test_cli_reports_model_error(fake_cli, tmp_path, capsys):
     source = tmp_path / "gauge.json"
     source.write_text(json.dumps(PRODUCT, ensure_ascii=False), encoding="utf-8")
     assert cli.main([str(source)]) == 1
@@ -139,3 +141,20 @@ def test_oversized_body_is_refused_with_message():
     res = client().post("/api/card", content=body.encode())
     assert res.status_code == 422
     assert res.json()["errors"][0].startswith("Вход слишком большой")
+
+
+def test_cli_answers_not_enough_data_without_key(fake_cli, tmp_path, capsys):
+    source = tmp_path / "name_only.json"
+    source.write_text('{"name": "ТРМ501"}', encoding="utf-8")
+    assert cli.main([str(source), "-o", str(tmp_path / "out")]) == 0
+    assert json.loads((tmp_path / "out" / "name_only.json").read_text())["status"] == (
+        "not_enough_data"
+    )
+
+
+def test_form_reports_bad_input_before_missing_key():
+    def no_key():
+        raise LLMError("Нет ключа GIGACHAT_AUTH_KEY.")
+
+    res = TestClient(create_app(no_key)).post("/api/card", content=b"{oops")
+    assert res.status_code == 422
