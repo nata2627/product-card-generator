@@ -13,7 +13,7 @@ from card_generator.schema import Product
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = ROOT / "prompts"
-DEFAULT_PROMPT = "card_v3"
+DEFAULT_PROMPT = "card_v4"
 DATA_TAG = "product_data"
 
 

@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
-PROMPTS = ("card_v1", "card_v2")
+PROMPTS = ("card_v2", "card_v3")
 
 
 def _summary(prompt: str) -> dict:
@@ -42,9 +42,13 @@ EVAL_ROWS = [
     ("Нарушения фактов остались после повтора", "final_with_fact_problems"),
     ("Нарушений фактов после повтора, всего", "final_fact_problems_total"),
     ("Карточка помечена «требует проверки»", "needs_review"),
+    ("Понадобился шаг длины описания", "length_step_used"),
     ("Длины в норме с первой попытки", "first_attempt_lengths_ok"),
     ("Длины в норме в итоге", "final_lengths_ok"),
+    ("Запросов от 4 до 5", "queries_4_5"),
+    ("Есть общий запрос без названия модели", "with_generic_query"),
     ("Оценочные фразы без данных, всего", "evaluative_phrases_total"),
+    ("Карточки с оценочными фразами", "with_evaluative_phrases"),
     ("Отказ «недостаточно данных»", "not_enough_data"),
     ("Ошибки API", "errors"),
 ]
