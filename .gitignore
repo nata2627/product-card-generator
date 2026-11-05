@@ -22,3 +22,6 @@ materials/
 data/raw/
 *.token
 .cache/
+
+# generated cards
+out/
