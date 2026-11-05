@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
-PROMPTS = ("card_v2", "card_v3", "card_v4")
+PROMPTS = ("card_v2", "card_v3", "card_v4", "final")
 
 
 def _summary(prompt: str) -> dict:
@@ -75,6 +75,13 @@ def expected_lines() -> list[str]:
     )
     lines = [f"| {label} | {' | '.join(values)} |" for label, values in rows]
     lines.append(f"Модель {summaries[-1]['model']}")
+    final = summaries[-1]
+    lines.append(
+        f"из {final['cases']} случаев модель выходит за входные данные на первой попытке "
+        f"в {_share(final['first_attempt_with_fact_problems'])} карточек, после повтора "
+        f"нарушения остаются в {_share(final['final_with_fact_problems'])}, и все они помечены "
+        f"для менеджера; длины в норме в итоге {_share(final['final_lengths_ok'])}"
+    )
 
     for path in sorted((ROOT / "examples" / "outputs").glob("*.json")):
         card = json.loads(path.read_text(encoding="utf-8"))

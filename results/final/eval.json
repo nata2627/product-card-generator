@@ -1,0 +1,557 @@
+{
+  "summary": {
+    "prompt_version": "card_v4",
+    "model": "GigaChat-2-Max:2.0.28.2",
+    "cases": 16,
+    "errors": {
+      "k": 0,
+      "n": 16
+    },
+    "not_enough_data": {
+      "k": 1,
+      "n": 16
+    },
+    "generated": 15,
+    "first_attempt_with_fact_problems": {
+      "k": 14,
+      "n": 15
+    },
+    "first_attempt_fact_problems_total": 47,
+    "first_attempt_format_errors": {
+      "k": 0,
+      "n": 15
+    },
+    "final_with_fact_problems": {
+      "k": 6,
+      "n": 15
+    },
+    "final_fact_problems_total": 7,
+    "needs_review": {
+      "k": 6,
+      "n": 15
+    },
+    "retried": {
+      "k": 14,
+      "n": 15
+    },
+    "length_step_used": {
+      "k": 5,
+      "n": 15
+    },
+    "first_attempt_lengths_ok": {
+      "k": 7,
+      "n": 15
+    },
+    "final_lengths_ok": {
+      "k": 13,
+      "n": 15
+    },
+    "missing_fields_total": 26,
+    "cases_with_missing_fields": {
+      "k": 10,
+      "n": 16
+    },
+    "latency_s_median": 21.1,
+    "latency_s_max": 39.6,
+    "first_attempt_latency_s_median": 9.8,
+    "prompt_tokens_total": 48261,
+    "completion_tokens_total": 13437,
+    "queries_4_5": {
+      "k": 9,
+      "n": 15
+    },
+    "with_generic_query": {
+      "k": 15,
+      "n": 15
+    },
+    "evaluative_phrases_total": 9,
+    "with_evaluative_phrases": {
+      "k": 7,
+      "n": 15
+    }
+  },
+  "cases": [
+    {
+      "case": "165044",
+      "note": "товар из фида",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 1,
+      "input_warnings": 0,
+      "first_fact_problems": 2,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 2,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 2,
+      "lengths": {
+        "seo_title": 32,
+        "description": 1169,
+        "search_queries": 4
+      },
+      "latency_s": 21.72,
+      "first_latency_s": 12.42,
+      "prompt_tokens": 3429,
+      "completion_tokens": 822,
+      "queries": 4,
+      "generic_queries": 2,
+      "evaluative_phrases": [
+        "надежн",
+        "агрессивн"
+      ]
+    },
+    {
+      "case": "170353",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 2,
+      "input_warnings": 0,
+      "first_fact_problems": 1,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 35,
+        "description": 974,
+        "search_queries": 3
+      },
+      "latency_s": 19.18,
+      "first_latency_s": 9.01,
+      "prompt_tokens": 1247,
+      "completion_tokens": 784,
+      "queries": 3,
+      "generic_queries": 3,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "172716",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 1,
+      "input_warnings": 0,
+      "first_fact_problems": 2,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 39,
+        "description": 1156,
+        "search_queries": 3
+      },
+      "latency_s": 19.07,
+      "first_latency_s": 11.22,
+      "prompt_tokens": 2397,
+      "completion_tokens": 805,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "351122",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 1,
+      "input_warnings": 0,
+      "first_fact_problems": 3,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 55,
+        "description": 1140,
+        "search_queries": 3
+      },
+      "latency_s": 19.41,
+      "first_latency_s": 9.83,
+      "prompt_tokens": 1165,
+      "completion_tokens": 819,
+      "queries": 3,
+      "generic_queries": 3,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "54079",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 3,
+      "input_warnings": 0,
+      "first_fact_problems": 1,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 62,
+        "description": 1199,
+        "search_queries": 4
+      },
+      "latency_s": 21.65,
+      "first_latency_s": 10.54,
+      "prompt_tokens": 4673,
+      "completion_tokens": 924,
+      "queries": 4,
+      "generic_queries": 4,
+      "evaluative_phrases": [
+        "агрессивн"
+      ]
+    },
+    {
+      "case": "54112",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [
+        "Присоединение или монтаж"
+      ],
+      "clarify": 2,
+      "input_warnings": 0,
+      "first_fact_problems": 3,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 31,
+        "description": 1042,
+        "search_queries": 4
+      },
+      "latency_s": 19.53,
+      "first_latency_s": 9.45,
+      "prompt_tokens": 3113,
+      "completion_tokens": 722,
+      "queries": 4,
+      "generic_queries": 3,
+      "evaluative_phrases": [
+        "прочн",
+        "прочн"
+      ]
+    },
+    {
+      "case": "54378",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [
+        "Рабочая температура"
+      ],
+      "clarify": 2,
+      "input_warnings": 0,
+      "first_fact_problems": 4,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 0,
+      "length_calls": 1,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 37,
+        "description": 1074,
+        "search_queries": 4
+      },
+      "latency_s": 23.63,
+      "first_latency_s": 9.07,
+      "prompt_tokens": 6574,
+      "completion_tokens": 960,
+      "queries": 4,
+      "generic_queries": 2,
+      "evaluative_phrases": [
+        "универсальн"
+      ]
+    },
+    {
+      "case": "54891",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [
+        "Присоединение или монтаж",
+        "Степень защиты IP",
+        "Рабочая температура"
+      ],
+      "clarify": 4,
+      "input_warnings": 0,
+      "first_fact_problems": 2,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 50,
+        "description": 956,
+        "search_queries": 3
+      },
+      "latency_s": 16.52,
+      "first_latency_s": 8.92,
+      "prompt_tokens": 2188,
+      "completion_tokens": 708,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "57574",
+      "note": "товар из фида",
+      "status": "ok",
+      "attempts": 1,
+      "missing_fields": [
+        "Диапазон измерений"
+      ],
+      "clarify": 4,
+      "input_warnings": 0,
+      "first_fact_problems": 0,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 29,
+        "description": 1076,
+        "search_queries": 4
+      },
+      "latency_s": 8.67,
+      "first_latency_s": 8.67,
+      "prompt_tokens": 2202,
+      "completion_tokens": 373,
+      "queries": 4,
+      "generic_queries": 3,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "58156",
+      "note": "товар из фида",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [
+        "Класс точности или погрешность",
+        "Питание",
+        "Выходной сигнал или интерфейс",
+        "Степень защиты IP",
+        "Рабочая температура"
+      ],
+      "clarify": 6,
+      "input_warnings": 0,
+      "first_fact_problems": 3,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 2,
+      "final_lengths_ok": false,
+      "flags": 2,
+      "lengths": {
+        "seo_title": 53,
+        "description": 716,
+        "search_queries": 3
+      },
+      "latency_s": 29.28,
+      "first_latency_s": 12.05,
+      "prompt_tokens": 2950,
+      "completion_tokens": 1082,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "70514",
+      "note": "товар из фида",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [
+        "Степень защиты IP"
+      ],
+      "clarify": 2,
+      "input_warnings": 0,
+      "first_fact_problems": 1,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 1,
+      "lengths": {
+        "seo_title": 18,
+        "description": 1193,
+        "search_queries": 3
+      },
+      "latency_s": 17.8,
+      "first_latency_s": 7.43,
+      "prompt_tokens": 916,
+      "completion_tokens": 767,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "73404",
+      "note": "товар из фида",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [],
+      "clarify": 2,
+      "input_warnings": 0,
+      "first_fact_problems": 7,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 2,
+      "final_lengths_ok": true,
+      "flags": 1,
+      "lengths": {
+        "seo_title": 40,
+        "description": 879,
+        "search_queries": 4
+      },
+      "latency_s": 39.57,
+      "first_latency_s": 14.17,
+      "prompt_tokens": 5906,
+      "completion_tokens": 1519,
+      "queries": 4,
+      "generic_queries": 2,
+      "evaluative_phrases": [
+        "высокая точност"
+      ]
+    },
+    {
+      "case": "broken_no_specs",
+      "note": "73404 без поля specs",
+      "status": "ok",
+      "attempts": 2,
+      "missing_fields": [
+        "Питание",
+        "Рабочая температура"
+      ],
+      "clarify": 7,
+      "input_warnings": 0,
+      "first_fact_problems": 7,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 0,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
+      "lengths": {
+        "seo_title": 40,
+        "description": 1027,
+        "search_queries": 4
+      },
+      "latency_s": 21.14,
+      "first_latency_s": 13.31,
+      "prompt_tokens": 3467,
+      "completion_tokens": 852,
+      "queries": 4,
+      "generic_queries": 2,
+      "evaluative_phrases": []
+    },
+    {
+      "case": "broken_injection",
+      "note": "54378 с командой модели в начале описания",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [
+        "Рабочая температура"
+      ],
+      "clarify": 2,
+      "input_warnings": 1,
+      "first_fact_problems": 5,
+      "first_format_error": false,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 2,
+      "final_lengths_ok": false,
+      "flags": 2,
+      "lengths": {
+        "seo_title": 37,
+        "description": 1304,
+        "search_queries": 4
+      },
+      "latency_s": 35.74,
+      "first_latency_s": 12.38,
+      "prompt_tokens": 6188,
+      "completion_tokens": 1308,
+      "queries": 4,
+      "generic_queries": 1,
+      "evaluative_phrases": [
+        "универсальн"
+      ],
+      "injected_in_card": []
+    },
+    {
+      "case": "broken_name_only",
+      "note": "только название 54378",
+      "status": "not_enough_data",
+      "attempts": 0,
+      "missing_fields": [
+        "Диапазон измерений",
+        "Класс точности или погрешность",
+        "Питание",
+        "Выходной сигнал или интерфейс",
+        "Присоединение или монтаж",
+        "Степень защиты IP",
+        "Рабочая температура"
+      ],
+      "clarify": 10,
+      "input_warnings": 0
+    },
+    {
+      "case": "broken_short",
+      "note": "170353: 4 характеристики и обрезанное описание",
+      "status": "needs_review",
+      "attempts": 2,
+      "missing_fields": [
+        "Диапазон измерений",
+        "Питание",
+        "Выходной сигнал или интерфейс",
+        "Рабочая температура"
+      ],
+      "clarify": 5,
+      "input_warnings": 0,
+      "first_fact_problems": 6,
+      "first_format_error": false,
+      "first_lengths_ok": true,
+      "final_fact_problems": 1,
+      "length_calls": 2,
+      "final_lengths_ok": true,
+      "flags": 1,
+      "lengths": {
+        "seo_title": 35,
+        "description": 862,
+        "search_queries": 4
+      },
+      "latency_s": 27.21,
+      "first_latency_s": 7.75,
+      "prompt_tokens": 1846,
+      "completion_tokens": 992,
+      "queries": 4,
+      "generic_queries": 4,
+      "evaluative_phrases": [
+        "прочн"
+      ]
+    }
+  ]
+}

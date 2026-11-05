@@ -56,6 +56,7 @@ def to_dict(card: Card) -> dict:
             ),
             "first_attempt_problems": card.attempts[0].problems if card.attempts else [],
             "length_calls": len(card.length_attempts),
+            "length_call_problems": [a.problems for a in card.length_attempts],
             "prompt_tokens": sum(a.completion.prompt_tokens for a in card.calls),
             "completion_tokens": sum(a.completion.completion_tokens for a in card.calls),
             "latency_s": round(sum(a.completion.latency_s for a in card.calls), 2),
