@@ -73,6 +73,13 @@ SERIES_MARKERS = re.compile(
     re.IGNORECASE,
 )
 
+SERIES_AS_MODEL = "значение серии приписано модели"
+# "резьба M20x1,5, предусмотренная в данной модели": a series value claimed for this exact
+# product. Series markers in the same sentence do not excuse it.
+THIS_MODEL = re.compile(
+    r"\b(данн|эт|конкретн)\w*\s+(модел|модификаци|исполнени|версии)", re.IGNORECASE
+)
+
 INSTRUCTION = re.compile(
     r"игнорир|забудь|не учитывай|(предыдущ|прошл|все)\w* (инструкц|правил|указани)|"
     r"\bнапиши,? что\b|\bукажи,? что\b|ты (теперь|должен)|system prompt|ignore (all|previous)|"
@@ -88,6 +95,11 @@ class Violation:
     fragment: str
 
     def __str__(self) -> str:
+        if self.kind == SERIES_AS_MODEL:
+            return (
+                f"{self.field}: значение из перечня для серии приписано этой модели "
+                f"({self.fragment})"
+            )
         if self.kind == SERIES_PICK:
             return (
                 f"{self.field}: из перечня для серии выбрано одно значение без пометки "
@@ -199,6 +211,12 @@ def _signature(piece: str, shared_unit: str) -> frozenset:
     # Bare numbers ("2 – двухпроводная") match too much; such pieces compare as text.
     if pairs and all(unit for _, unit in pairs) and not _CODE_MARK.search(piece):
         return frozenset(pairs)
+    # In 'опционально G1/2"' or "M20х1,5 по ГОСТ 2405-88" the code alone names the option.
+    # A piece with its own label ("RS-485 Опционально: Ethernet") mixes a standard value
+    # with options and stays whole.
+    codes = [t.strip("./,-") for t in _TOKEN.findall(piece) if _CODE_MARK.search(t)]
+    if codes and ":" not in piece:
+        return frozenset({fold(codes[0])})
     return frozenset({fold(piece.strip(" .;,"))})
 
 
@@ -219,7 +237,10 @@ def _series_groups(product: Product) -> list[tuple[str, list[frozenset]]]:
         signatures = [_signature(p, shared_unit) for p in pieces]
         if all(_NAME_LIKE.fullmatch(p) or _CODE_MARK.search(p) for p in pieces):
             # "50М; 50П; Pt100" is a list of names, even though "50М" reads like 50 metres.
-            signatures = [frozenset({fold(p.strip(" .;,"))}) for p in pieces]
+            signatures = [
+                frozenset({fold(p.strip(" .;,"))}) if _is_numeric(sig) else sig
+                for p, sig in zip(pieces, signatures, strict=True)
+            ]
         kinds = {frozenset(unit for _, unit in s) if _is_numeric(s) else "text" for s in signatures}
         if len(kinds) == 1 and len(set(signatures)) >= 2:
             groups.append((name, signatures))
@@ -233,7 +254,8 @@ def _is_numeric(signature: frozenset) -> bool:
 def _series_picks(text: str, groups, names: list[str]) -> list[tuple[str, str]]:
     picks = []
     for sentence in _sentences(text):
-        if SERIES_MARKERS.search(sentence):
+        claims_model = bool(THIS_MODEL.search(sentence))
+        if SERIES_MARKERS.search(sentence) and not claims_model:
             continue
         # The product name may contain one of the values ("РТ100") and the maker may share
         # its name with a protocol ("ОВЕН"); a mention of either alone is not a pick.
@@ -244,6 +266,9 @@ def _series_picks(text: str, groups, names: list[str]) -> list[tuple[str, str]]:
         tokens = _unit_tokens(_unfold_ranges(without_name))
         for spec_name, signatures in groups:
             hits = [s for s in signatures if _matches(s, tokens, folded)]
+            if hits and claims_model:
+                picks.append((SERIES_AS_MODEL, f"{spec_name}: {sentence}"))
+                break
             # Naming two or more values reads as a description of the range, not a pick.
             if len(hits) == 1:
                 picks.append((SERIES_PICK, f"{spec_name}: {sentence}"))

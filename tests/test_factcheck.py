@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from card_generator.factcheck import SERIES_PICK, check_facts, strip_instructions
+from card_generator.factcheck import (
+    SERIES_AS_MODEL,
+    SERIES_PICK,
+    check_facts,
+    strip_instructions,
+)
 from card_generator.prompting import CardText
 from card_generator.schema import parse_product
 
@@ -194,3 +199,33 @@ def test_input_text_passes_its_own_check(path):
     text = f"{specs}. {data.get('description', '')}"
     found = violations(text, data, commercial=text)
     assert [v for v in found if v.kind != SERIES_PICK] == []
+
+
+PD100 = json.loads((ROOT / "eval" / "inputs" / "73404.json").read_text())
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        'Резьба M20x1,5 предусмотрена в данной модели, в серии есть штуцеры G1/2", G1/4".',
+        "В этой модификации погрешность 0,5 % ВПИ.",
+    ],
+)
+def test_series_value_claimed_for_this_model(text):
+    assert SERIES_AS_MODEL in [k for k, _ in kinds(text, PD100)]
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        'В серии доступны штуцеры M20x1,5, G1/2" и G1/4".',
+        "В данной модели питание 12…36 В постоянного тока.",
+    ],
+)
+def test_series_list_or_model_value_passes(text):
+    assert SERIES_AS_MODEL not in [k for k, _ in kinds(text, PD100)]
+
+
+def test_thread_option_claimed_for_this_model_without_quoting_the_list():
+    assert SERIES_AS_MODEL in [k for k, _ in kinds("В данной модели резьба M20x1,5.", PD100)]
+    assert SERIES_PICK in [k for k, _ in kinds("Датчик со штуцером G1/2.", PD100)]
