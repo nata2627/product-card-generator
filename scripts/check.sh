@@ -7,4 +7,5 @@ PY=.venv/bin/python
 "$PY" -m ruff format --check card_generator tests scripts
 "$PY" -m pytest -q
 "$PY" scripts/check_private.py
+"$PY" -m scripts.verify_numbers
 echo "check: ok"
