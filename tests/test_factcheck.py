@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from card_generator.factcheck import (
+    ASSESSMENT,
     SERIES_AS_MODEL,
     SERIES_PICK,
     check_facts,
@@ -192,13 +193,13 @@ INPUTS = sorted(
 
 @pytest.mark.parametrize("path", INPUTS, ids=lambda p: p.stem)
 def test_input_text_passes_its_own_check(path):
-    # Site descriptions single out one series value themselves, so series picks are
-    # expected here; every other kind of violation would be a false alarm.
+    # Site descriptions single out one series value themselves and carry marketing
+    # assessments, so those two kinds are expected here; any other would be a false alarm.
     data = json.loads(path.read_text(encoding="utf-8"))
     specs = ". ".join(f"{k}: {v}" for k, v in data.get("specs", {}).items())
     text = f"{specs}. {data.get('description', '')}"
     found = violations(text, data, commercial=text)
-    assert [v for v in found if v.kind != SERIES_PICK] == []
+    assert [v for v in found if v.kind not in {SERIES_PICK, ASSESSMENT}] == []
 
 
 PD100 = json.loads((ROOT / "eval" / "inputs" / "73404.json").read_text())
@@ -229,3 +230,15 @@ def test_series_list_or_model_value_passes(text):
 def test_thread_option_claimed_for_this_model_without_quoting_the_list():
     assert SERIES_AS_MODEL in [k for k, _ in kinds("В данной модели резьба M20x1,5.", PD100)]
     assert SERIES_PICK in [k for k, _ in kinds("Датчик со штуцером G1/2.", PD100)]
+
+
+def test_assessment_is_flagged_even_if_the_input_says_it():
+    data = {**GAUGE, "description": GAUGE["description"] + " Надежный и удобный прибор."}
+    found = kinds("Надежный манометр обеспечивает высокую точность.", data)
+    assert (ASSESSMENT, "Надежный") in found and (ASSESSMENT, "высокую точность") in found
+
+
+def test_spec_terms_that_look_like_assessments_pass():
+    text = "Универсальный вход, средний срок службы 12 лет, для слабоагрессивных сред."
+    data = {"name": "ТРМ", "description": text}
+    assert [k for k, _ in kinds(text, data) if k == ASSESSMENT] == []

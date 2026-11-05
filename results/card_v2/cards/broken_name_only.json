@@ -1,7 +1,7 @@
 {
   "case": "broken_name_only",
   "note": "только название 54378",
-  "started_at": "2026-11-05T12:19:31+00:00",
+  "started_at": "2026-11-05T13:16:50+00:00",
   "metrics": {
     "status": "not_enough_data",
     "attempts": 0,
@@ -89,6 +89,7 @@
       "attempts": 0,
       "used_attempt": null,
       "first_attempt_problems": [],
+      "length_calls": 0,
       "prompt_tokens": 0,
       "completion_tokens": 0,
       "latency_s": 0

@@ -61,9 +61,19 @@ VOCABULARY: dict[str, list[str]] = {
         r"\bлучш", r"\bсамы[йхем]", r"№\s?1\b|номер один", r"\bлидер", r"гаранти",
         r"в наличии|на складе", r"\bцен[аеуы]\b|руб\.|₽|скидк", r"доставк",
         r"срок\w* (поставк|изготовлени)", r"идеальн", r"уникальн", r"инновац",
-        r"высококачествен", r"надежн", r"превосходн", r"безупречн", r"непревзойд",
+        r"высококачествен", r"превосходн", r"безупречн", r"непревзойд",
     ],
 }  # fmt: skip
+
+ASSESSMENT = "оценка без значения"
+# Assessments flagged even when the input has them: site copy often says "высокая точность"
+# or "надежный", which is marketing, not data. Words that also occur as data ("срок службы
+# 12 лет", "слабоагрессивные среды", "универсальный вход") are not in this list.
+ASSESSMENTS = re.compile(
+    r"высок\w* точност|надежн|широк\w* (спектр|круг)|универсальн\w* (решени|прибор|устройств)|"
+    r"современн|удобн|тяжел\w* (производствен\w* )?услови",
+    re.IGNORECASE,
+)
 
 SERIES_PICK = "одно значение из серии"
 _LIST_GAP = re.compile(r"\s*(,|;|/|или|и)\s*")
@@ -105,6 +115,11 @@ class Violation:
                 f"{self.field}: из перечня для серии выбрано одно значение без пометки "
                 f"«в серии» ({self.fragment})"
             )
+        if self.kind == ASSESSMENT:
+            return (
+                f"{self.field}: оценка «{self.fragment}» без значения, замени значением "
+                "из данных или убери"
+            )
         return f"{self.field}: {self.kind} «{self.fragment}» нет во входных данных"
 
 
@@ -144,6 +159,7 @@ def check_facts(card: CardText, product: Product) -> list[Violation]:
                 hit = re.search(folded_pattern, folded)
                 if hit and not re.search(folded_pattern, folded_source):
                     found.append((kind, _word_at(text, hit.start())))
+        found += [(ASSESSMENT, _whole_words(text, m)) for m in ASSESSMENTS.finditer(text)]
         found += _series_picks(text, groups, [product.name, product.manufacturer or ""])
         for kind, fragment in dict.fromkeys(found):
             violations.append(Violation(field, kind, fragment))
@@ -196,6 +212,11 @@ def _num(raw: str) -> float:
 def _word_at(text: str, start: int) -> str:
     m = re.match(r"[\w№₽.-]+", text[start:])
     return m.group(0).rstrip(".") if m else text[start : start + 10]
+
+
+def _whole_words(text: str, match: re.Match) -> str:
+    tail = re.match(r"\w*", text[match.end() :]).group(0)
+    return text[match.start() : match.end() + len(tail)]
 
 
 def _sentences(text: str) -> list[str]:

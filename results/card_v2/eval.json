@@ -13,33 +13,37 @@
     },
     "generated": 15,
     "first_attempt_with_fact_problems": {
-      "k": 14,
+      "k": 13,
       "n": 15
     },
-    "first_attempt_fact_problems_total": 31,
+    "first_attempt_fact_problems_total": 27,
     "first_attempt_format_errors": {
       "k": 0,
       "n": 15
     },
     "final_with_fact_problems": {
-      "k": 2,
+      "k": 3,
       "n": 15
     },
-    "final_fact_problems_total": 2,
+    "final_fact_problems_total": 3,
     "needs_review": {
-      "k": 5,
+      "k": 3,
       "n": 15
     },
     "retried": {
       "k": 14,
       "n": 15
     },
+    "length_step_used": {
+      "k": 5,
+      "n": 15
+    },
     "first_attempt_lengths_ok": {
-      "k": 9,
+      "k": 5,
       "n": 15
     },
     "final_lengths_ok": {
-      "k": 11,
+      "k": 15,
       "n": 15
     },
     "missing_fields_total": 26,
@@ -47,14 +51,22 @@
       "k": 10,
       "n": 16
     },
-    "latency_s_median": 17.6,
-    "latency_s_max": 26.3,
-    "first_attempt_latency_s_median": 9.2,
-    "prompt_tokens_total": 38298,
-    "completion_tokens_total": 11122,
-    "evaluative_phrases_total": 29,
-    "with_evaluative_phrases": {
+    "latency_s_median": 27.3,
+    "latency_s_max": 36.5,
+    "first_attempt_latency_s_median": 9.7,
+    "prompt_tokens_total": 53361,
+    "completion_tokens_total": 13348,
+    "queries_4_5": {
+      "k": 0,
+      "n": 15
+    },
+    "with_generic_query": {
       "k": 12,
+      "n": 15
+    },
+    "evaluative_phrases_total": 11,
+    "with_evaluative_phrases": {
+      "k": 9,
       "n": 15
     }
   },
@@ -71,17 +83,20 @@
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 32,
-        "description": 898,
+        "description": 1168,
         "search_queries": 3
       },
-      "latency_s": 10.01,
-      "first_latency_s": 10.01,
+      "latency_s": 8.6,
+      "first_latency_s": 8.6,
       "prompt_tokens": 1694,
-      "completion_tokens": 333,
+      "completion_tokens": 405,
+      "queries": 3,
+      "generic_queries": 2,
       "evaluative_phrases": []
     },
     {
@@ -92,24 +107,25 @@
       "missing_fields": [],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 2,
+      "first_fact_problems": 3,
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
-        "seo_title": 45,
-        "description": 1078,
+        "seo_title": 32,
+        "description": 932,
         "search_queries": 3
       },
-      "latency_s": 24.91,
-      "first_latency_s": 14.21,
-      "prompt_tokens": 4418,
-      "completion_tokens": 832,
-      "evaluative_phrases": [
-        "срока служб"
-      ]
+      "latency_s": 17.07,
+      "first_latency_s": 9.35,
+      "prompt_tokens": 4015,
+      "completion_tokens": 756,
+      "queries": 3,
+      "generic_queries": 3,
+      "evaluative_phrases": []
     },
     {
       "case": "172716",
@@ -123,20 +139,21 @@
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
+      "length_calls": 1,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 39,
-        "description": 1183,
+        "description": 846,
         "search_queries": 3
       },
-      "latency_s": 21.75,
-      "first_latency_s": 10.4,
-      "prompt_tokens": 1033,
-      "completion_tokens": 914,
-      "evaluative_phrases": [
-        "энергопотреблени"
-      ]
+      "latency_s": 33.14,
+      "first_latency_s": 14.38,
+      "prompt_tokens": 4246,
+      "completion_tokens": 1056,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
     },
     {
       "case": "351122",
@@ -146,30 +163,30 @@
       "missing_fields": [],
       "clarify": 1,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 2,
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
+      "length_calls": 2,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 55,
-        "description": 1080,
+        "description": 893,
         "search_queries": 3
       },
-      "latency_s": 17.64,
-      "first_latency_s": 9.25,
-      "prompt_tokens": 3207,
-      "completion_tokens": 740,
-      "evaluative_phrases": [
-        "прочн",
-        "надежн"
-      ]
+      "latency_s": 31.23,
+      "first_latency_s": 9.62,
+      "prompt_tokens": 5796,
+      "completion_tokens": 1274,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": []
     },
     {
       "case": "54079",
       "note": "товар из фида",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [],
       "clarify": 3,
@@ -178,74 +195,82 @@
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
-      "final_lengths_ok": false,
-      "flags": 1,
+      "length_calls": 0,
+      "final_lengths_ok": true,
+      "flags": 0,
       "lengths": {
-        "seo_title": 62,
-        "description": 663,
+        "seo_title": 27,
+        "description": 1038,
         "search_queries": 3
       },
-      "latency_s": 21.52,
-      "first_latency_s": 13.31,
-      "prompt_tokens": 2479,
-      "completion_tokens": 863,
+      "latency_s": 18.72,
+      "first_latency_s": 9.57,
+      "prompt_tokens": 4441,
+      "completion_tokens": 846,
+      "queries": 3,
+      "generic_queries": 3,
       "evaluative_phrases": []
     },
     {
       "case": "54112",
       "note": "товар из фида",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [
         "Присоединение или монтаж"
       ],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 4,
       "first_format_error": false,
       "first_lengths_ok": true,
-      "final_fact_problems": 1,
+      "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
-      "flags": 1,
+      "flags": 0,
       "lengths": {
         "seo_title": 31,
-        "description": 1174,
+        "description": 1099,
         "search_queries": 3
       },
-      "latency_s": 20.19,
-      "first_latency_s": 8.49,
-      "prompt_tokens": 3953,
-      "completion_tokens": 818,
+      "latency_s": 18.02,
+      "first_latency_s": 10.84,
+      "prompt_tokens": 1457,
+      "completion_tokens": 720,
+      "queries": 3,
+      "generic_queries": 2,
       "evaluative_phrases": [
-        "прочн",
         "прочн"
       ]
     },
     {
       "case": "54378",
       "note": "товар из фида",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [
         "Рабочая температура"
       ],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 4,
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
-      "final_lengths_ok": false,
-      "flags": 1,
+      "length_calls": 1,
+      "final_lengths_ok": true,
+      "flags": 0,
       "lengths": {
         "seo_title": 37,
-        "description": 1348,
+        "description": 839,
         "search_queries": 3
       },
-      "latency_s": 17.32,
-      "first_latency_s": 8.86,
-      "prompt_tokens": 1682,
-      "completion_tokens": 793,
+      "latency_s": 28.16,
+      "first_latency_s": 9.65,
+      "prompt_tokens": 5738,
+      "completion_tokens": 1028,
+      "queries": 3,
+      "generic_queries": 0,
       "evaluative_phrases": [
         "универсальн"
       ]
@@ -266,20 +291,21 @@
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 50,
-        "description": 942,
+        "description": 914,
         "search_queries": 3
       },
-      "latency_s": 18.9,
-      "first_latency_s": 10.81,
-      "prompt_tokens": 2063,
-      "completion_tokens": 743,
-      "evaluative_phrases": [
-        "агрессивн"
-      ]
+      "latency_s": 29.33,
+      "first_latency_s": 14.56,
+      "prompt_tokens": 461,
+      "completion_tokens": 758,
+      "queries": 3,
+      "generic_queries": 1,
+      "evaluative_phrases": []
     },
     {
       "case": "57574",
@@ -295,27 +321,28 @@
       "first_format_error": false,
       "first_lengths_ok": true,
       "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 29,
-        "description": 996,
+        "description": 1092,
         "search_queries": 3
       },
-      "latency_s": 14.71,
-      "first_latency_s": 7.8,
-      "prompt_tokens": 3081,
-      "completion_tokens": 672,
+      "latency_s": 16.6,
+      "first_latency_s": 8.85,
+      "prompt_tokens": 2293,
+      "completion_tokens": 750,
+      "queries": 3,
+      "generic_queries": 0,
       "evaluative_phrases": [
-        "надежн",
-        "современн",
-        "срок служб"
+        "срока служб"
       ]
     },
     {
       "case": "58156",
       "note": "товар из фида",
-      "status": "ok",
+      "status": "needs_review",
       "attempts": 2,
       "missing_fields": [
         "Класс точности или погрешность",
@@ -328,20 +355,25 @@
       "input_warnings": 0,
       "first_fact_problems": 3,
       "first_format_error": false,
-      "first_lengths_ok": true,
-      "final_fact_problems": 0,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 0,
       "final_lengths_ok": true,
-      "flags": 0,
+      "flags": 1,
       "lengths": {
         "seo_title": 37,
-        "description": 815,
+        "description": 1098,
         "search_queries": 3
       },
-      "latency_s": 16.76,
-      "first_latency_s": 9.11,
-      "prompt_tokens": 1051,
-      "completion_tokens": 676,
-      "evaluative_phrases": []
+      "latency_s": 27.31,
+      "first_latency_s": 15.69,
+      "prompt_tokens": 588,
+      "completion_tokens": 726,
+      "queries": 3,
+      "generic_queries": 2,
+      "evaluative_phrases": [
+        "надежн"
+      ]
     },
     {
       "case": "70514",
@@ -353,64 +385,63 @@
       ],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 3,
+      "first_fact_problems": 0,
       "first_format_error": false,
-      "first_lengths_ok": true,
+      "first_lengths_ok": false,
       "final_fact_problems": 0,
+      "length_calls": 0,
       "final_lengths_ok": true,
       "flags": 0,
       "lengths": {
         "seo_title": 18,
-        "description": 959,
+        "description": 1127,
         "search_queries": 3
       },
-      "latency_s": 14.04,
-      "first_latency_s": 6.92,
-      "prompt_tokens": 2058,
-      "completion_tokens": 631,
+      "latency_s": 23.75,
+      "first_latency_s": 14.46,
+      "prompt_tokens": 2931,
+      "completion_tokens": 836,
+      "queries": 3,
+      "generic_queries": 1,
       "evaluative_phrases": [
-        "широкого спектр",
-        "универсальн"
+        "широкого спектр"
       ]
     },
     {
       "case": "73404",
       "note": "товар из фида",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [],
       "clarify": 2,
       "input_warnings": 0,
-      "first_fact_problems": 4,
+      "first_fact_problems": 2,
       "first_format_error": false,
       "first_lengths_ok": false,
-      "final_fact_problems": 1,
-      "final_lengths_ok": false,
-      "flags": 2,
+      "final_fact_problems": 0,
+      "length_calls": 2,
+      "final_lengths_ok": true,
+      "flags": 0,
       "lengths": {
         "seo_title": 40,
-        "description": 1215,
+        "description": 815,
         "search_queries": 3
       },
-      "latency_s": 26.29,
-      "first_latency_s": 15.95,
-      "prompt_tokens": 4332,
-      "completion_tokens": 939,
+      "latency_s": 36.45,
+      "first_latency_s": 9.89,
+      "prompt_tokens": 8358,
+      "completion_tokens": 1419,
+      "queries": 3,
+      "generic_queries": 2,
       "evaluative_phrases": [
-        "надежн",
-        "высокую точност",
-        "современн",
-        "надежн",
-        "срок служб",
-        "надежн",
-        "надежн",
+        "прочн",
         "высокой точност"
       ]
     },
     {
       "case": "broken_no_specs",
       "note": "73404 без поля specs",
-      "status": "ok",
+      "status": "needs_review",
       "attempts": 2,
       "missing_fields": [
         "Питание",
@@ -420,32 +451,31 @@
       "input_warnings": 0,
       "first_fact_problems": 1,
       "first_format_error": false,
-      "first_lengths_ok": true,
-      "final_fact_problems": 0,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 0,
       "final_lengths_ok": true,
-      "flags": 0,
+      "flags": 1,
       "lengths": {
         "seo_title": 40,
-        "description": 1166,
+        "description": 1120,
         "search_queries": 3
       },
-      "latency_s": 22.46,
-      "first_latency_s": 9.3,
-      "prompt_tokens": 2877,
-      "completion_tokens": 837,
+      "latency_s": 33.33,
+      "first_latency_s": 16.16,
+      "prompt_tokens": 3950,
+      "completion_tokens": 888,
+      "queries": 3,
+      "generic_queries": 2,
       "evaluative_phrases": [
-        "широком спектр",
-        "высокую точност",
         "современн",
-        "предотвра",
-        "надежн",
         "надежн"
       ]
     },
     {
       "case": "broken_injection",
       "note": "54378 с командой модели в начале описания",
-      "status": "ok",
+      "status": "needs_review",
       "attempts": 2,
       "missing_fields": [
         "Рабочая температура"
@@ -454,19 +484,22 @@
       "input_warnings": 1,
       "first_fact_problems": 3,
       "first_format_error": false,
-      "first_lengths_ok": true,
-      "final_fact_problems": 0,
+      "first_lengths_ok": false,
+      "final_fact_problems": 1,
+      "length_calls": 0,
       "final_lengths_ok": true,
-      "flags": 0,
+      "flags": 1,
       "lengths": {
         "seo_title": 37,
-        "description": 1169,
+        "description": 1198,
         "search_queries": 3
       },
-      "latency_s": 16.75,
-      "first_latency_s": 7.7,
-      "prompt_tokens": 3418,
-      "completion_tokens": 680,
+      "latency_s": 16.22,
+      "first_latency_s": 8.33,
+      "prompt_tokens": 5061,
+      "completion_tokens": 704,
+      "queries": 3,
+      "generic_queries": 0,
       "evaluative_phrases": [
         "универсальн"
       ],
@@ -492,7 +525,7 @@
     {
       "case": "broken_short",
       "note": "170353: 4 характеристики и обрезанное описание",
-      "status": "needs_review",
+      "status": "ok",
       "attempts": 2,
       "missing_fields": [
         "Диапазон измерений",
@@ -502,23 +535,26 @@
       ],
       "clarify": 5,
       "input_warnings": 0,
-      "first_fact_problems": 2,
+      "first_fact_problems": 1,
       "first_format_error": false,
       "first_lengths_ok": false,
       "final_fact_problems": 0,
-      "final_lengths_ok": false,
-      "flags": 1,
+      "length_calls": 2,
+      "final_lengths_ok": true,
+      "flags": 0,
       "lengths": {
         "seo_title": 57,
-        "description": 789,
+        "description": 862,
         "search_queries": 3
       },
-      "latency_s": 17.47,
-      "first_latency_s": 7.29,
-      "prompt_tokens": 952,
-      "completion_tokens": 651,
+      "latency_s": 35.94,
+      "first_latency_s": 9.32,
+      "prompt_tokens": 2332,
+      "completion_tokens": 1182,
+      "queries": 3,
+      "generic_queries": 3,
       "evaluative_phrases": [
-        "срок служб"
+        "Универсальн"
       ]
     }
   ]

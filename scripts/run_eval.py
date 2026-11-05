@@ -1,6 +1,6 @@
 """Run the card pipeline on eval/inputs plus broken inputs and write metrics to results/.
 
-python -m scripts.run_eval [--prompt card_v2] [--only ID ...] [--fresh]
+python -m scripts.run_eval [--prompt card_v4] [--only ID ...] [--fresh] [--name DIR]
 
 Every finished case is saved to results/<prompt>/cards/<case>.json right away, so a
 rerun after an interruption skips those cases and only calls the model for the rest.
@@ -270,10 +270,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--prompt", default=DEFAULT_PROMPT)
     parser.add_argument("--only", nargs="*", help="id случаев, по умолчанию все")
     parser.add_argument("--fresh", action="store_true", help="не брать готовые случаи с диска")
+    parser.add_argument("--name", help="папка в results/, по умолчанию версия промпта")
     args = parser.parse_args(argv)
 
     prompt = load_prompt(args.prompt)
-    out_dir = RESULTS / prompt.version
+    out_dir = RESULTS / (args.name or prompt.version)
     cards_dir = out_dir / "cards"
     cards_dir.mkdir(parents=True, exist_ok=True)
     llm = None

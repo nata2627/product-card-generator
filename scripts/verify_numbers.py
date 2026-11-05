@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
-PROMPTS = ("card_v2", "card_v3")
+PROMPTS = ("card_v2", "card_v3", "card_v4")
 
 
 def _summary(prompt: str) -> dict:
