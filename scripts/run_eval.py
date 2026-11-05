@@ -97,7 +97,7 @@ def run_case(case_id: str, note: str, raw: dict, llm, prompt) -> dict:
     except LLMError as exc:
         return {"case": case_id, "note": note, "started_at": started, "error": str(exc)}
     data = to_dict(card)
-    first, last = (card.attempts[0], card.used_attempt) if card.attempts else (None, None)
+    first = card.attempts[0] if card.attempts else None
     metrics = {
         "status": card.status,
         "attempts": len(card.attempts),
@@ -110,14 +110,15 @@ def run_case(case_id: str, note: str, raw: dict, llm, prompt) -> dict:
             "first_fact_problems": len(first.facts),
             "first_format_error": first.format_error is not None,
             "first_lengths_ok": not first.lengths and first.format_error is None,
-            "final_fact_problems": len(last.facts),
+            "final_fact_problems": len(card.final_facts),
+            "length_calls": len(card.length_attempts),
             "final_lengths_ok": not check_lengths(card.text),
             "flags": len(card.flags),
             "lengths": card.lengths,
-            "latency_s": round(sum(a.completion.latency_s for a in card.attempts), 2),
+            "latency_s": round(sum(a.completion.latency_s for a in card.calls), 2),
             "first_latency_s": round(first.completion.latency_s, 2),
-            "prompt_tokens": sum(a.completion.prompt_tokens for a in card.attempts),
-            "completion_tokens": sum(a.completion.completion_tokens for a in card.attempts),
+            "prompt_tokens": sum(a.completion.prompt_tokens for a in card.calls),
+            "completion_tokens": sum(a.completion.completion_tokens for a in card.calls),
             "evaluative_phrases": [
                 m.group(0)
                 for m in EVALUATIVE.finditer(card.text.description + " " + card.text.commercial)
@@ -166,6 +167,7 @@ def summarize(records: list[dict], prompt_version: str, model: str | None) -> di
         "final_fact_problems_total": sum(m["final_fact_problems"] for m in generated),
         "needs_review": frac(sum(m["status"] == "needs_review" for m in generated), n),
         "retried": frac(sum(m["attempts"] > 1 for m in generated), n),
+        "length_step_used": frac(sum(m.get("length_calls", 0) > 0 for m in generated), n),
         "first_attempt_lengths_ok": frac(sum(m["first_lengths_ok"] for m in generated), n),
         "final_lengths_ok": frac(sum(m["final_lengths_ok"] for m in generated), n),
         "missing_fields_total": sum(len(m["missing_fields"]) for m in done),
@@ -200,6 +202,7 @@ def to_markdown(summary: dict, records: list[dict]) -> str:
         f"| Нарушений фактов на первой попытке, всего | {s['first_attempt_fact_problems_total']} |",
         f"| Первая попытка не по формату JSON | {_f(s['first_attempt_format_errors'])} |",
         f"| Понадобилась повторная попытка | {_f(s['retried'])} |",
+        f"| Понадобился шаг длины описания | {_f(s['length_step_used'])} |",
         f"| Нарушения фактов остались после повтора | {_f(s['final_with_fact_problems'])} |",
         f"| Нарушений фактов после повтора, всего | {s['final_fact_problems_total']} |",
         f"| Карточка помечена «требует проверки» | {_f(s['needs_review'])} |",

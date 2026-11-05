@@ -1,4 +1,5 @@
-"""From raw input to a checked card: validate, analyse, generate, check, retry once, flag."""
+"""From raw input to a checked card: validate, analyse, generate, check, retry once, fit the
+description length in a separate call, flag what is left."""
 
 from dataclasses import dataclass, field
 from typing import Literal
@@ -10,8 +11,10 @@ from card_generator.prompting import (
     CardText,
     Prompt,
     ReplyFormatError,
+    build_length_messages,
     build_messages,
     load_prompt,
+    parse_plain_reply,
     parse_reply,
 )
 from card_generator.schema import Product, parse_product
@@ -20,6 +23,8 @@ TITLE_MAX = 70
 DESCRIPTION_MIN, DESCRIPTION_MAX = 800, 1200
 QUERIES_MIN, QUERIES_MAX = 3, 5
 MAX_ATTEMPTS = 2
+LENGTH_PROMPT = "length_v1"
+MAX_LENGTH_CALLS = 2
 
 Status = Literal["ok", "needs_review", "not_enough_data"]
 
@@ -50,6 +55,13 @@ class Card:
     attempts: list[Attempt] = field(default_factory=list)
     # The attempt the card text comes from: a retry can come back worse than the first answer.
     used_attempt: Attempt | None = None
+    # Separate calls that only resize the description, and the fact problems of the final text.
+    length_attempts: list[Attempt] = field(default_factory=list)
+    final_facts: list[str] = field(default_factory=list)
+
+    @property
+    def calls(self) -> list[Attempt]:
+        return self.attempts + self.length_attempts
 
     @property
     def status(self) -> Status:
@@ -109,8 +121,42 @@ def make_card(raw, llm: LLM, prompt: Prompt | None = None, draft_anyway: bool = 
     # Fewer fact problems first, then fewer length problems; on a tie the later answer wins.
     best = min(reversed(answered), key=lambda a: (len(a.facts), len(a.lengths)))
     card.used_attempt = best
-    card.text, card.flags = enforce_limits(best.text, best.problems)
+    text, facts = best.text, best.facts
+    if not DESCRIPTION_MIN <= len(text.description) <= DESCRIPTION_MAX:
+        text, facts = fit_description(card, llm, text, facts)
+    card.final_facts = facts
+    card.text, card.flags = enforce_limits(text, facts + check_lengths(text))
     return card
+
+
+def fit_description(card: Card, llm: LLM, text: CardText, facts: list[str]):
+    """Resize the description alone and check its facts again.
+
+    A full retry trades length against facts; a call that only rewrites one field to a
+    given size keeps the rest of the card as it is. The new text is taken only if it fits
+    and brings no more fact problems than the current one.
+    """
+    prompt = load_prompt(LENGTH_PROMPT)
+    current = text
+    for _ in range(MAX_LENGTH_CALLS):
+        messages = build_length_messages(
+            prompt, card.product, current.description, DESCRIPTION_MIN, DESCRIPTION_MAX
+        )
+        completion = llm.complete(messages)
+        description = parse_plain_reply(completion.text)
+        if not description:
+            card.length_attempts.append(Attempt(completion, format_error="Пустой ответ."))
+            continue
+        candidate = current.model_copy(update={"description": description})
+        found = [str(v) for v in check_facts(candidate, card.product)]
+        card.length_attempts.append(Attempt(completion, candidate, found, check_lengths(candidate)))
+        if len(found) > len(facts):
+            continue
+        current = candidate
+        if DESCRIPTION_MIN <= len(description) <= DESCRIPTION_MAX:
+            return candidate, found
+    # No call hit the range: keep the text that came out of the fact check.
+    return text, facts
 
 
 def check_lengths(text: CardText) -> list[str]:

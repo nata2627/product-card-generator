@@ -145,11 +145,37 @@ def test_long_description_retried_with_exact_count():
     assert problem in llm.calls[1][-1]["content"]
 
 
-def test_short_description_after_retry_is_flagged():
+def plain(chars: int, extra: str = "") -> str:
+    return extra + (SENTENCE * 40)[:chars].rsplit(" ", 1)[0] + "."
+
+
+def test_short_description_left_after_length_step_is_flagged():
     short = reply(description_chars=500)
-    card = make_card(PRODUCT, FakeLLM(short, short))
+    card = make_card(PRODUCT, FakeLLM(short, short, plain(600), plain(700)))
     assert card.status == "needs_review"
-    assert any(f.startswith("description: получилось") for f in card.flags)
+    assert len(card.length_attempts) == 2
+    assert any(f.startswith("description: получилось 493") for f in card.flags)
+
+
+def test_length_step_fixes_description_and_keeps_the_rest():
+    short = reply(description_chars=500)
+    llm = FakeLLM(short, short, plain(950))
+    card = make_card(PRODUCT, llm)
+    assert card.status == "ok"
+    assert len(card.attempts) == 2 and len(card.length_attempts) == 1
+    assert card.text.description == plain(950)
+    assert card.text.commercial == "Для измерения избыточного давления."
+    request = llm.calls[2][-1]["content"]
+    assert "Сейчас в описании 493 символов" in request and "Дополни" in request
+
+
+def test_length_step_that_adds_a_fact_is_rejected():
+    short = reply(description_chars=500)
+    invented = plain(950, "Класс точности 0,5. ")
+    card = make_card(PRODUCT, FakeLLM(short, short, invented, invented))
+    assert card.text.description == json.loads(short)["description"]
+    assert card.length_attempts[0].facts
+    assert not any("«0,5»" in f for f in card.flags)
 
 
 def test_long_title_cut_at_word_boundary():

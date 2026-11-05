@@ -56,18 +56,35 @@ def load_prompt(version: str = DEFAULT_PROMPT) -> Prompt:
 
 
 def build_messages(prompt: Prompt, product: Product, report: Completeness) -> list[dict]:
-    if product.specs_scope == "series":
-        scope_note = (
-            "Характеристики во входе относятся ко всей серии, а не только к этой модификации."
-        )
-    else:
-        scope_note = "Характеристики во входе относятся к этой модели."
     user = prompt.user.substitute(
         product=render_product(product),
-        scope_note=scope_note,
+        scope_note=scope_note(product),
         missing=", ".join(report.missing) or "все ожидаемые поля есть",
     )
     return [{"role": "system", "content": prompt.system}, {"role": "user", "content": user}]
+
+
+def build_length_messages(
+    prompt: Prompt, product: Product, description: str, low: int, high: int
+) -> list[dict]:
+    length = len(description)
+    user = prompt.user.substitute(
+        product=render_product(product),
+        scope_note=scope_note(product),
+        text=re.sub(r"</?\s*description\s*>", " ", description, flags=re.IGNORECASE),
+        length=length,
+        task="Сократи" if length > high else "Дополни",
+        low=low,
+        high=high,
+        target=(low + high) // 2,
+    )
+    return [{"role": "system", "content": prompt.system}, {"role": "user", "content": user}]
+
+
+def scope_note(product: Product) -> str:
+    if product.specs_scope == "series":
+        return "Характеристики во входе относятся ко всей серии, а не только к этой модификации."
+    return "Характеристики во входе относятся к этой модели."
 
 
 def render_product(product: Product) -> str:
@@ -81,6 +98,12 @@ def render_product(product: Product) -> str:
     lines += ["Описание:", product.description or "данных нет"]
     # A closing tag inside the data would let injected text escape the data block.
     return re.sub(rf"</?\s*{DATA_TAG}\s*>", " ", "\n".join(lines), flags=re.IGNORECASE)
+
+
+def parse_plain_reply(text: str) -> str:
+    """The length step answers with the description alone; drop fences and quotes around it."""
+    text = re.sub(r"^```\w*\s*|\s*```$", "", text.strip())
+    return text.strip().strip('«»"').strip()
 
 
 def parse_reply(text: str) -> CardText:
