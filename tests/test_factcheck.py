@@ -104,6 +104,15 @@ def test_dimensions_and_units_compare_as_numbers():
     assert ("число", "3,5") in kinds("Блок индикации массой 3,5 кг.", data)
 
 
+def test_joined_columns_are_not_a_list_of_alternatives():
+    data = {
+        "name": "Хоббит-Т",
+        "specs_scope": "series",
+        "specs": {"блока датчика": "300 г; O50х165 мм"},
+    }
+    assert kinds("Блок датчика массой 300 г.", data) == []
+
+
 def test_modification_code_is_not_a_source_of_numbers():
     data = {"name": "ПД100-ДИ0,6-111-0,5", "specs": {"Напряжение питания": "12…36 В"}}
     assert ("число", "0,6") in kinds("Верхний предел 0,6 МПа.", data)

@@ -30,6 +30,7 @@ _TOKEN = re.compile(r"[\w/.,-]*\d[\w/.,-]*")
 # A letter followed by a digit marks a code: "ДИ0,6-111-0,5", "Pt100", "M20x1,5", "IP65".
 # "18об.%" or "2-х" are numbers with a glued unit and stay numbers.
 _CODE_MARK = re.compile(r"[^\W\d_][-./]?\d")
+_NAME_LIKE = re.compile(r"\d+[^\W\d_]{1,3}")
 _STANDARD = re.compile(r"\b(гост(?:\s?р)?|ту|iso|din|en|iec)\s?\d[\d.\s-]*\d", re.IGNORECASE)
 _UNIT = r"°\s?[cс]|%|мом|ком|ом|мпа|кпа|па|бар|мв|в|ма|а|квт|вт|гц|мм|см|м|кг|г|с|мин|ч|лет|бит/с"
 _NUMBER_WITH_UNIT = re.compile(rf"{_NUMBER.pattern}\s?({_UNIT})?(?![а-яa-z])", re.IGNORECASE)
@@ -42,7 +43,7 @@ VOCABULARY: dict[str, list[str]] = {
         r"\bdcon\b", r"\brtu\b", r"\btcp\b", r"\bascii\b", r"токов\w* петл",
     ],
     "материал": [
-        r"нержаве", r"\bстал[иьею]", r"латун", r"алюмини", r"пластик", r"пластмасс",
+        r"нержаве", r"\bстал[иьею]", r"латун", r"алюмини", r"пластик|пластмасс",
         r"полиамид", r"поликарбонат", r"полипропилен", r"бронз", r"\bмед(ь|ью|и\b|н)",
         r"титан", r"фторопласт", r"\bptfe\b", r"керамик", r"чугун", r"силикон", r"\baisi\b",
         r"платин", r"никел",
@@ -215,8 +216,8 @@ def _series_groups(product: Product) -> list[tuple[str, list[frozenset]]]:
         last = _NUMBER_WITH_UNIT.findall(_unfold_ranges(pieces[-1]))
         shared_unit = last[-1][1] if last and last[-1][1] else ""
         signatures = [_signature(p, shared_unit) for p in pieces]
-        if not all(_is_numeric(s) for s in signatures):
-            # "50М; 50П; Pt100": one code among the pieces makes the whole list a list of names.
+        if all(_NAME_LIKE.fullmatch(p) or _CODE_MARK.search(p) for p in pieces):
+            # "50М; 50П; Pt100" is a list of names, even though "50М" reads like 50 metres.
             signatures = [frozenset({fold(p.strip(" .;,"))}) for p in pieces]
         kinds = {frozenset(unit for _, unit in s) if _is_numeric(s) else "text" for s in signatures}
         if len(kinds) == 1 and len(set(signatures)) >= 2:
