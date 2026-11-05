@@ -4,13 +4,13 @@ version = "0.1.0"
 requires-python = ">=3.11"
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["."]
 testpaths = ["tests"]
 markers = ["live: calls the real GigaChat API, skipped unless RUN_LIVE=1"]
 
 [tool.ruff]
 line-length = 100
-src = ["src", "tests", "scripts"]
+src = [".", "tests", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
