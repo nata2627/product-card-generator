@@ -88,6 +88,16 @@ def test_injection_is_removed_from_prompt_and_still_caught():
     assert any("«0,1»" in f for f in card.flags)
 
 
+def test_worse_retry_keeps_the_first_answer():
+    first = reply(commercial="Для металлургии.")
+    worse = reply(commercial="Лучший прибор для металлургии с классом точности 0,5.")
+    card = make_card(PRODUCT, FakeLLM(first, worse))
+    assert len(card.attempts) == 2
+    assert card.used_attempt is card.attempts[0]
+    assert card.text.commercial == "Для металлургии."
+    assert card.flags == card.attempts[0].problems
+
+
 def test_not_enough_data_skips_the_model():
     llm = FakeLLM()
     card = make_card({"name": "Манометр DM 02"}, llm)

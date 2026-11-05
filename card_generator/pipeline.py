@@ -27,6 +27,7 @@ Status = Literal["ok", "needs_review", "not_enough_data"]
 @dataclass
 class Attempt:
     completion: Completion
+    text: CardText | None = None
     facts: list[str] = field(default_factory=list)
     lengths: list[str] = field(default_factory=list)
     format_error: str | None = None
@@ -47,6 +48,8 @@ class Card:
     # Problems left after the retry; each one needs a human look before publishing.
     flags: list[str] = field(default_factory=list)
     attempts: list[Attempt] = field(default_factory=list)
+    # The attempt the card text comes from: a retry can come back worse than the first answer.
+    used_attempt: Attempt | None = None
 
     @property
     def status(self) -> Status:
@@ -82,16 +85,15 @@ def make_card(raw, llm: LLM, prompt: Prompt | None = None, draft_anyway: bool = 
         return card
 
     messages = build_messages(prompt, product, report)
-    text = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         completion = llm.complete(messages)
         try:
             text = parse_reply(completion.text)
             current = Attempt(
-                completion, [str(v) for v in check_facts(text, product)], check_lengths(text)
+                completion, text, [str(v) for v in check_facts(text, product)], check_lengths(text)
             )
         except ReplyFormatError as exc:
-            text, current = None, Attempt(completion, format_error=f"Ответ не по формату: {exc}.")
+            current = Attempt(completion, format_error=f"Ответ не по формату: {exc}.")
         card.attempts.append(current)
         if not current.problems:
             break
@@ -100,10 +102,14 @@ def make_card(raw, llm: LLM, prompt: Prompt | None = None, draft_anyway: bool = 
                 {"role": "assistant", "content": completion.text},
                 {"role": "user", "content": retry_request(current.problems)},
             ]
-    if text is None:
+    answered = [a for a in card.attempts if a.text is not None]
+    if not answered:
         raise LLMError(f"Модель {MAX_ATTEMPTS} раза ответила не по формату карточки.")
 
-    card.text, card.flags = enforce_limits(text, card.attempts[-1].problems)
+    # Fewer fact problems first, then fewer length problems; on a tie the later answer wins.
+    best = min(reversed(answered), key=lambda a: (len(a.facts), len(a.lengths)))
+    card.used_attempt = best
+    card.text, card.flags = enforce_limits(best.text, best.problems)
     return card
 
 

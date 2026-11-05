@@ -51,6 +51,9 @@ def to_dict(card: Card) -> dict:
             "prompt_version": card.prompt_version,
             "model": card.attempts[-1].completion.model if card.attempts else None,
             "attempts": len(card.attempts),
+            "used_attempt": (
+                card.attempts.index(card.used_attempt) + 1 if card.used_attempt else None
+            ),
             "first_attempt_problems": card.attempts[0].problems if card.attempts else [],
             "prompt_tokens": sum(a.completion.prompt_tokens for a in card.attempts),
             "completion_tokens": sum(a.completion.completion_tokens for a in card.attempts),

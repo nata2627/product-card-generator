@@ -66,6 +66,7 @@ VOCABULARY: dict[str, list[str]] = {
 }  # fmt: skip
 
 SERIES_PICK = "одно значение из серии"
+_LIST_GAP = re.compile(r"\s*(,|;|/|или|и)\s*")
 SERIES_MARKERS = re.compile(
     r"сери[ияйюе]|исполнени|модификаци|на выбор|по заказу|в зависимости|вариант|доступн|"
     r"опционал|по данным для|выбор|выбира",
@@ -131,7 +132,7 @@ def check_facts(card: CardText, product: Product) -> list[Violation]:
                 hit = re.search(folded_pattern, folded)
                 if hit and not re.search(folded_pattern, folded_source):
                     found.append((kind, _word_at(text, hit.start())))
-        found += _series_picks(text, groups, product.name)
+        found += _series_picks(text, groups, [product.name, product.manufacturer or ""])
         for kind, fragment in dict.fromkeys(found):
             violations.append(Violation(field, kind, fragment))
     return violations
@@ -229,31 +230,54 @@ def _is_numeric(signature: frozenset) -> bool:
     return all(isinstance(item, tuple) for item in signature)
 
 
-def _series_picks(text: str, groups, name: str) -> list[tuple[str, str]]:
+def _series_picks(text: str, groups, names: list[str]) -> list[tuple[str, str]]:
     picks = []
     for sentence in _sentences(text):
         if SERIES_MARKERS.search(sentence):
             continue
-        # The product name may contain one of the values ("РТ100"), that alone is not a pick.
-        without_name = re.sub(re.escape(name), " ", sentence, flags=re.IGNORECASE)
-        folded = fold(without_name)
-        tokens = {
-            (_num(m.group(1)), fold(m.group(2) or "").replace(" ", ""))
-            for m in _NUMBER_WITH_UNIT.finditer(_unfold_ranges(without_name))
-        }
+        # The product name may contain one of the values ("РТ100") and the maker may share
+        # its name with a protocol ("ОВЕН"); a mention of either alone is not a pick.
+        without_name = sentence
+        for name in filter(None, names):
+            without_name = re.sub(re.escape(name), " ", without_name, flags=re.IGNORECASE)
+        folded = _dehyphen(fold(without_name))
+        tokens = _unit_tokens(_unfold_ranges(without_name))
         for spec_name, signatures in groups:
             hits = [s for s in signatures if _matches(s, tokens, folded)]
-            if hits and len(hits) < len(signatures):
+            # Naming two or more values reads as a description of the range, not a pick.
+            if len(hits) == 1:
                 picks.append((SERIES_PICK, f"{spec_name}: {sentence}"))
                 break
     return picks
 
 
+def _unit_tokens(text: str) -> set[tuple[float, str]]:
+    """Numbers with units; in "0,5 или 1,0 %" the unit is shared by the whole list."""
+    tokens, pending, prev_end = set(), [], None
+    for m in _NUMBER_WITH_UNIT.finditer(text):
+        if prev_end is not None and not _LIST_GAP.fullmatch(text[prev_end : m.start()]):
+            pending = []
+        value, unit = _num(m.group(1)), fold(m.group(2) or "").replace(" ", "")
+        tokens.add((value, unit))
+        if unit:
+            tokens |= {(v, unit) for v in pending}
+            pending = []
+        else:
+            pending.append(value)
+        prev_end = m.end()
+    return tokens
+
+
 def _matches(signature: frozenset, tokens: set, folded: str) -> bool:
     for item in signature:
         if isinstance(item, str):
-            if not re.search(rf"(?<!\w){re.escape(item)}(?!\w)", folded):
+            if not re.search(rf"(?<!\w){re.escape(_dehyphen(item))}(?!\w)", folded):
                 return False
         elif item not in tokens:
             return False
     return True
+
+
+def _dehyphen(text: str) -> str:
+    """Treat "ModBus-RTU" and "Modbus RTU" as the same value."""
+    return re.sub(r"(?<=\w)-(?=\w)", " ", text)
