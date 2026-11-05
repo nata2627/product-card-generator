@@ -27,7 +27,14 @@ Status = Literal["ok", "needs_review", "not_enough_data"]
 @dataclass
 class Attempt:
     completion: Completion
-    problems: list[str]
+    facts: list[str] = field(default_factory=list)
+    lengths: list[str] = field(default_factory=list)
+    format_error: str | None = None
+
+    @property
+    def problems(self) -> list[str]:
+        head = [self.format_error] if self.format_error else []
+        return head + self.facts + self.lengths
 
 
 @dataclass
@@ -80,16 +87,18 @@ def make_card(raw, llm: LLM, prompt: Prompt | None = None, draft_anyway: bool = 
         completion = llm.complete(messages)
         try:
             text = parse_reply(completion.text)
-            problems = [str(v) for v in check_facts(text, product)] + check_lengths(text)
+            current = Attempt(
+                completion, [str(v) for v in check_facts(text, product)], check_lengths(text)
+            )
         except ReplyFormatError as exc:
-            text, problems = None, [f"Ответ не по формату: {exc}."]
-        card.attempts.append(Attempt(completion, problems))
-        if not problems:
+            text, current = None, Attempt(completion, format_error=f"Ответ не по формату: {exc}.")
+        card.attempts.append(current)
+        if not current.problems:
             break
         if attempt < MAX_ATTEMPTS:
             messages = messages + [
                 {"role": "assistant", "content": completion.text},
-                {"role": "user", "content": retry_request(problems)},
+                {"role": "user", "content": retry_request(current.problems)},
             ]
     if text is None:
         raise LLMError(f"Модель {MAX_ATTEMPTS} раза ответила не по формату карточки.")

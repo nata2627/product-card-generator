@@ -1,0 +1,96 @@
+{
+  "case": "broken_name_only",
+  "note": "только название 54378",
+  "started_at": "2026-11-05T12:01:44+00:00",
+  "metrics": {
+    "status": "not_enough_data",
+    "attempts": 0,
+    "missing_fields": [
+      "Диапазон измерений",
+      "Класс точности или погрешность",
+      "Питание",
+      "Выходной сигнал или интерфейс",
+      "Присоединение или монтаж",
+      "Степень защиты IP",
+      "Рабочая температура"
+    ],
+    "clarify": 10,
+    "input_warnings": 0
+  },
+  "card": {
+    "status": "not_enough_data",
+    "product": {
+      "name": "ТРМ501",
+      "manufacturer": "данных нет",
+      "product_type": "данных нет",
+      "profile": "прибор КИП"
+    },
+    "seo_title": null,
+    "description": null,
+    "key_specs": [
+      {
+        "field": "Диапазон измерений",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Класс точности или погрешность",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Питание",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Выходной сигнал или интерфейс",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Присоединение или монтаж",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Степень защиты IP",
+        "status": "missing",
+        "value": "данных нет"
+      },
+      {
+        "field": "Рабочая температура",
+        "status": "missing",
+        "value": "данных нет"
+      }
+    ],
+    "specs": [],
+    "specs_scope": "model",
+    "search_queries": [],
+    "commercial": null,
+    "clarify": [
+      "Производитель: данных нет.",
+      "Тип прибора: не указан, чек-лист полей подобран по названию.",
+      "Описание: данных нет.",
+      "Диапазон измерений: данных нет.",
+      "Класс точности или погрешность: данных нет.",
+      "Питание: данных нет.",
+      "Выходной сигнал или интерфейс: данных нет.",
+      "Присоединение или монтаж: данных нет.",
+      "Степень защиты IP: данных нет.",
+      "Рабочая температура: данных нет."
+    ],
+    "needs_review": [],
+    "input_warnings": [],
+    "lengths": {},
+    "meta": {
+      "prompt_version": "card_v1",
+      "model": null,
+      "attempts": 0,
+      "first_attempt_problems": [],
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "latency_s": 0
+    }
+  }
+}
