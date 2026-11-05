@@ -104,6 +104,12 @@ def parse_quick_specs(soup: BeautifulSoup) -> dict[str, str]:
 
 
 GENERIC_HEADERS = {"характеристики", "параметр", "наименование", "наименование параметра"}
+# Drawing captions: every cell is "<same label>: <variant>", as in "Тип штуцера: Х2Х" |
+# "Тип штуцера: Х4Х". Such a row names pictures and carries no spec value.
+_CAPTION = re.compile(r"^([^:]+):\s*\S")
+# A name cut after an adjective ("Устойчивость к механическим" + "воздействиям") goes on
+# in the next row, which then starts lowercase.
+_UNFINISHED = re.compile(r"(ым|им|ой|ых|их|ого|его|ую|юю|ая|яя)$")
 
 
 def parse_spec_table(soup: BeautifulSoup) -> dict[str, str]:
@@ -150,6 +156,20 @@ def _parse_table(table: Tag, specs: dict[str, list[str]]) -> None:
                 section = cells[0].rstrip(":")
             continue
         key, values = cells[0], cells[1:]
+        if _is_caption_row(cells):
+            continue
+        if key[0].islower() and current_key and _UNFINISHED.search(current_key):
+            # Both halves of the row belong together, so the value is joined with a space
+            # and does not read as a list of series options.
+            merged = f"{current_key} {key}"
+            items = list(specs.items())
+            specs.clear()
+            for name, vals in items:
+                if name == current_key:
+                    name, vals = merged, [" ".join(vals + values)]
+                specs[name] = vals
+            current_key = merged
+            continue
         if key[0] in "-–":
             key = f"{section}, {key.lstrip('-– ')}" if section else key.lstrip("-– ")
         else:
@@ -157,6 +177,11 @@ def _parse_table(table: Tag, specs: dict[str, list[str]]) -> None:
         current_key = key
         rows_left = int(row.find("td").get("rowspan", 1)) - 1
         specs.setdefault(key, []).extend(values)
+
+
+def _is_caption_row(cells: list[str]) -> bool:
+    labels = {m.group(1) if (m := _CAPTION.match(c)) else None for c in cells}
+    return len(labels) == 1 and None not in labels
 
 
 def _row_cells(row: Tag) -> list[str]:
